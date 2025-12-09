@@ -23,7 +23,8 @@ import {
 import { getComicDialog } from './actions';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useUser, useFirestore, addDocumentNonBlocking } from '@/firebase';
+import { useUser, useFirestore } from '@/firebase';
+import { addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { collection } from 'firebase/firestore';
 
 type StatusType = 'info' | 'loading' | 'success' | 'error';
@@ -122,7 +123,7 @@ export default function ComicStudioPage() {
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const recorder = new MediaRecorder(stream);
+      const recorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
       mediaRecorderRef.current = recorder;
       const audioChunks: Blob[] = [];
 
@@ -131,7 +132,7 @@ export default function ComicStudioPage() {
       };
 
       recorder.onstop = () => {
-        const newAudioBlob = new Blob(audioChunks, { type: 'audio/webm; codecs=opus' });
+        const newAudioBlob = new Blob(audioChunks, { type: 'audio/webm' });
         setAudioBlob(newAudioBlob);
         const newAudioUrl = URL.createObjectURL(newAudioBlob);
         setAudioUrl(newAudioUrl);
@@ -210,10 +211,10 @@ export default function ComicStudioPage() {
 
   return (
     <div className="min-h-screen bg-[#e0f2f1] p-4 sm:p-6 lg:p-8">
-      <header className="bg-[#00796b] shadow-xl text-white">
+      <header className="comic-bg shadow-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-            <h1 className="text-3xl font-extrabold tracking-tight">استوديو القصص المصورة</h1>
-            <Link href="/" className="text-sm font-semibold hover:text-gray-200 transition">
+            <h1 className="text-3xl font-extrabold text-white tracking-tight">استوديو القصص المصورة</h1>
+            <Link href="/" className="text-sm font-semibold text-white hover:text-gray-200 transition">
                  العودة للوحة التحكم
             </Link>
         </div>
@@ -223,7 +224,7 @@ export default function ComicStudioPage() {
             <h2 className="text-4xl font-bold text-gray-800 mb-2">اصنع قصتك وكن نجم الدبلجة!</h2>
             <p className="text-lg text-gray-600 mb-10">اختر مشهداً، ثم اطلب من الذكاء الاصطناعي توليد حوار بالعامية، وسجل صوتك لتؤدي الدور!</p>
 
-             <Card className="p-6 mb-10 border-t-4 border-[#ffb300]">
+             <Card className="p-6 mb-10 border-t-4 border-amber-400">
                  <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
                     <div className="flex items-center space-x-3 space-x-reverse w-full md:w-auto">
                         <label htmlFor="scene-select" className="font-semibold text-gray-700 whitespace-nowrap">اختر مشهد:</label>
@@ -239,7 +240,7 @@ export default function ComicStudioPage() {
                         </Select>
                     </div>
 
-                    <Button onClick={handleGenerateDialog} disabled={isGenerating} className="bg-[#ffb300] text-gray-800 font-bold hover:bg-[#ffc107] shadow-md">
+                    <Button onClick={handleGenerateDialog} disabled={isGenerating} className="comic-btn-primary">
                         <WandSparkles className="ml-2 h-4 w-4" />
                         {isGenerating ? 'جاري التوليد...' : 'توليد حوار العامية (Gemini)'}
                     </Button>
@@ -250,12 +251,12 @@ export default function ComicStudioPage() {
 
             <section className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                  {[1, 2, 3].map((panelNum) => (
-                    <div key={panelNum} className="bg-white border-4 border-black rounded-lg p-4 relative aspect-square flex flex-col justify-between shadow-[8px_8px_0px_rgba(0,0,0,0.6)]">
+                    <div key={panelNum} className="comic-panel">
                          <div className="absolute top-2 right-2 bg-black text-white rounded-full h-8 w-8 flex items-center justify-center font-bold text-lg">{panelNum}</div>
                          <div className="flex-grow flex items-center justify-center">
                             <Image src={`https://picsum.photos/seed/${scene}${panelNum}/400/400`} alt={`Scene panel ${panelNum}`} width={200} height={200} className="rounded-lg object-cover" />
                         </div>
-                         <div className="bg-white border-2 border-black rounded-xl p-3 shadow-md">
+                         <div className="speech-bubble">
                             <p className="text-center font-semibold">
                                 {dialogue[panelNum - 1] || `...`}
                             </p>
