@@ -11,7 +11,6 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { BookOpenCheck } from 'lucide-react';
 import { useAuth } from '@/firebase';
 import { initiateEmailSignIn } from '@/firebase/non-blocking-login';
 import { useState } from 'react';
@@ -30,37 +29,38 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-sm mx-auto">
+    <div className="flex min-h-screen items-center justify-center bg-nile-dark p-4">
+      <Card className="w-full max-w-sm mx-auto dashboard-card text-white">
         <CardHeader className="text-center">
           <div className="flex justify-center items-center mb-4">
-             <BookOpenCheck className="h-10 w-10 text-primary" />
+             <i className="fas fa-ankh text-4xl text-gold-accent"></i>
           </div>
-          <CardTitle className="text-2xl font-headline">Welcome Back</CardTitle>
-          <CardDescription>Enter your credentials to access your account</CardDescription>
+          <CardTitle className="text-3xl royal-title">بوابة العودة الملكية</CardTitle>
+          <CardDescription className="text-sand-ochre">أدخل أوراق اعتمادك للعودة إلى مملكتك</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin}>
             <div className="grid gap-4">
               <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="text-sand-ochre">البريد الإلكتروني</Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="m@example.com"
+                  placeholder="example@yallamasry.com"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  className="bg-nile-dark border-sand-ochre text-white placeholder:text-sand-ochre/50 focus:ring-gold-accent"
                 />
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password" className="text-sand-ochre">كلمة السر</Label>
                   <Link
                     href="#"
-                    className="ml-auto inline-block text-sm underline"
+                    className="ml-auto inline-block text-sm text-sand-ochre underline"
                   >
-                    Forgot your password?
+                    نسيت كلمة السر؟
                   </Link>
                 </div>
                 <Input 
@@ -69,20 +69,21 @@ export default function LoginPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  className="bg-nile-dark border-sand-ochre text-white focus:ring-gold-accent"
                 />
               </div>
-              <Button type="submit" className="w-full">
-                Login
+              <Button type="submit" className="w-full cta-button">
+                تسجيل الدخول
               </Button>
-              <Button variant="outline" className="w-full" disabled>
-                Login with Google
+              <Button variant="outline" className="w-full utility-button" disabled>
+                الدخول بواسطة Google
               </Button>
             </div>
           </form>
-          <div className="mt-4 text-center text-sm">
-            Don&apos;t have an account?{' '}
-            <Link href="/signup" className="underline">
-              Sign up
+          <div className="mt-4 text-center text-sm text-sand-ochre">
+            لا تملك حساباً؟{' '}
+            <Link href="/signup" className="underline font-bold">
+              انضم إلى المملكة
             </Link>
           </div>
         </CardContent>

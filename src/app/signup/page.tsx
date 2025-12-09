@@ -11,7 +11,6 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { BookOpenCheck } from 'lucide-react';
 import { useAuth } from '@/firebase';
 import { initiateEmailSignUp } from '@/firebase/non-blocking-login';
 import { useState } from 'react';
@@ -32,61 +31,64 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-sm mx-auto">
+    <div className="flex min-h-screen items-center justify-center bg-nile-dark p-4">
+      <Card className="w-full max-w-sm mx-auto dashboard-card text-white">
         <CardHeader className="text-center">
           <div className="flex justify-center items-center mb-4">
-            <BookOpenCheck className="h-10 w-10 text-primary" />
+            <i className="fas fa-scroll text-4xl text-gold-accent"></i>
           </div>
-          <CardTitle className="text-2xl font-headline">Create an Account</CardTitle>
-          <CardDescription>Enter your details to get started</CardDescription>
+          <CardTitle className="text-3xl royal-title">سجل هويتك الفرعونية</CardTitle>
+          <CardDescription className="text-sand-ochre">انضم إلى نخبة المتعلمين في أكاديمية يلا مصري</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSignup}>
             <div className="grid gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="name">Name</Label>
+               <div className="grid gap-2">
+                <Label htmlFor="name" className="text-sand-ochre">الاسم الكامل</Label>
                 <Input 
                   id="name" 
-                  placeholder="John Doe" 
+                  placeholder="مثال: حتشبسوت" 
                   required 
                   value={name}
                   onChange={(e) => setName(e.target.value)}
+                  className="bg-nile-dark border-sand-ochre text-white placeholder:text-sand-ochre/50 focus:ring-gold-accent"
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="text-sand-ochre">البريد الإلكتروني</Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="m@example.com"
+                  placeholder="example@yallamasry.com"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  className="bg-nile-dark border-sand-ochre text-white placeholder:text-sand-ochre/50 focus:ring-gold-accent"
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password" className="text-sand-ochre">كلمة السر</Label>
                 <Input 
                   id="password" 
                   type="password" 
                   required 
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  className="bg-nile-dark border-sand-ochre text-white focus:ring-gold-accent"
                 />
               </div>
-              <Button type="submit" className="w-full">
-                Sign Up
+              <Button type="submit" className="w-full cta-button">
+                إنشاء حساب ملكي
               </Button>
-              <Button variant="outline" className="w-full" disabled>
-                Sign up with Google
+              <Button variant="outline" className="w-full utility-button" disabled>
+                التسجيل بواسطة Google
               </Button>
             </div>
           </form>
-          <div className="mt-4 text-center text-sm">
-            Already have an account?{' '}
-            <Link href="/login" className="underline">
-              Login
+          <div className="mt-4 text-center text-sm text-sand-ochre">
+            هل تملك حساباً بالفعل؟{' '}
+            <Link href="/login" className="underline font-bold">
+              الدخول إلى المملكة
             </Link>
           </div>
         </CardContent>
