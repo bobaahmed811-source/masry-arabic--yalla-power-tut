@@ -103,7 +103,7 @@ export default function StorePage() {
       <header className="bg-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center" style={{ direction: 'rtl' }}>
           <Link href="/store" className="text-3xl font-bold text-[#0b4e8d] royal-title">كنوز النيل</Link>
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 space-x-reverse">
             <span className="text-sm text-gray-600 font-semibold">متجر برديات العامية والهدايا</span>
             <Link href="/" className="utility-button px-4 py-2 text-sm font-bold rounded-lg flex items-center justify-center">
                 <i className="fas fa-arrow-left ml-2"></i>
@@ -223,7 +223,7 @@ export default function StorePage() {
                             <label htmlFor="gift_product" className="font-bold text-gray-700">اختر الهدية:</label>
                              <select id="gift_product" className="w-full p-2 mt-1 border-2 border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500 bg-white">
                                 <option value="mammoth_scroll">برديّة وصفة الماموث (300 ج.م)</option>
-                                <option value="taxi_challenges">مجموعة تحديات التاكسي (500 ج.m)</option>
+                                <option value="taxi_challenges">مجموعة تحديات التاكسي (500 ج.م)</option>
                              </select>
                         </div>
                         <button onClick={() => setPaymentMessage({ type: 'success', title: 'تم إرسال إشعار الهدية!', body: 'سيتم إعلام صديقك بالهدية وسيتم التواصل معك لإتمام عملية الدفع.' })} className="w-full buy-button bg-pink-500 text-white px-6 py-3 rounded-lg font-bold shadow-md transform hover:scale-105 transition duration-200 text-lg">
