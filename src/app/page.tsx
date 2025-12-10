@@ -73,6 +73,7 @@ export default function RoyalDashboard() {
           booking_button: "حجز الدروس الملكية",
           quran_button: "واحة القرآن والسنة",
           pronunciation_challenge_button: "تحدي النطق",
+          community_chat_button: "ساحة الحوار المجتمعي",
           logout_button: "تسجيل الخروج",
           login_button: "تسجيل الدخول"
       },
@@ -96,6 +97,7 @@ export default function RoyalDashboard() {
           booking_button: "Royal Lesson Booking",
           quran_button: "Quran & Sunnah Oasis",
           pronunciation_challenge_button: "Pronunciation Challenge",
+          community_chat_button: "Community Chat",
           logout_button: "Log Out",
           login_button: "Log In",
       },
@@ -119,6 +121,7 @@ export default function RoyalDashboard() {
           booking_button: "皇家课程预订",
           quran_button: "古兰经与圣训绿洲",
           pronunciation_challenge_button: "发音挑战",
+          community_chat_button: "社区聊天",
           logout_button: "登出",
           login_button: "登录"
       },
@@ -142,6 +145,7 @@ export default function RoyalDashboard() {
         booking_button: "Réservation de Leçon",
         quran_button: "Oasis du Coran",
         pronunciation_challenge_button: "Défi de Prononciation",
+        community_chat_button: "Chat Communautaire",
         logout_button: "Déconnexion",
         login_button: "Connexion",
       },
@@ -165,6 +169,7 @@ export default function RoyalDashboard() {
         booking_button: "Reserva de Lecciones Reales",
         quran_button: "Oasis del Corán y la Sunna",
         pronunciation_challenge_button: "Reto de Pronunciación",
+        community_chat_button: "Chat Comunitario",
         logout_button: "Cerrar Sesión", login_button: "Iniciar Sesión"
       },
       it: {
@@ -187,6 +192,7 @@ export default function RoyalDashboard() {
         booking_button: "Prenotazione Lezione Reale",
         quran_button: "Oasi di Corano e Sunnah",
         pronunciation_challenge_button: "Sfida di Pronuncia",
+        community_chat_button: "Chat di Comunità",
         logout_button: "Esci", login_button: "Accedi"
       },
       nl: {
@@ -209,6 +215,7 @@ export default function RoyalDashboard() {
         booking_button: "Koninklijke Lesboeking",
         quran_button: "Koran & Sunnah Oase",
         pronunciation_challenge_button: "Uitspraakuitdaging",
+        community_chat_button: "Community Chat",
         logout_button: "Uitloggen", login_button: "Inloggen"
       },
       de: {
@@ -231,6 +238,7 @@ export default function RoyalDashboard() {
         booking_button: "Königliche Lektion buchen",
         quran_button: "Koran & Sunnah Oase",
         pronunciation_challenge_button: "Aussprache-Herausforderung",
+        community_chat_button: "Community-Chat",
         logout_button: "Ausloggen", login_button: "Einloggen"
       }
     };
@@ -267,6 +275,7 @@ export default function RoyalDashboard() {
             if(querySelector('#booking-button-text')) querySelector('#booking-button-text').textContent = texts.booking_button;
             if(querySelector('#quran-button-text')) querySelector('#quran-button-text').textContent = texts.quran_button;
             if(querySelector('#pronunciation-challenge-button-text')) querySelector('#pronunciation-challenge-button-text').textContent = texts.pronunciation_challenge_button;
+            if(querySelector('#community-chat-button-text')) querySelector('#community-chat-button-text').textContent = texts.community_chat_button;
 
             if (user) {
               if (querySelector('#auth-link-text')) querySelector('#auth-link-text').textContent = texts.logout_button;
@@ -412,6 +421,10 @@ export default function RoyalDashboard() {
                  <Link href="/pronunciation-challenge" id="pronunciation-challenge-button" className="utility-button px-6 py-3 text-lg font-bold rounded-full flex items-center justify-center border-pink-400 text-pink-400">
                     <i className="fas fa-bullhorn text-xl ml-3"></i>
                     <span id="pronunciation-challenge-button-text">تحدي النطق</span>
+                </Link>
+                <Link href="/community-chat" id="community-chat-button" className="utility-button px-6 py-3 text-lg font-bold rounded-full flex items-center justify-center border-lime-400 text-lime-400">
+                    <i className="fas fa-users text-xl ml-3"></i>
+                    <span id="community-chat-button-text">ساحة الحوار المجتمعي</span>
                 </Link>
             </div>
 

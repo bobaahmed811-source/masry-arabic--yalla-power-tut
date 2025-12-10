@@ -1,4 +1,3 @@
-
 {
   "entities": {
     "User": {
@@ -362,7 +361,7 @@
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "ChatMessage",
       "type": "object",
-      "description": "Represents a chat message between users.",
+      "description": "Represents a private chat message between two users.",
       "properties": {
         "id": {
           "type": "string",
@@ -391,6 +390,42 @@
         "senderId",
         "receiverId",
         "message",
+        "timestamp"
+      ]
+    },
+    "CommunityMessage": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "CommunityMessage",
+      "type": "object",
+      "description": "Represents a public message in a community chat room.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the CommunityMessage entity."
+        },
+        "senderId": {
+          "type": "string",
+          "description": "The UID of the user who sent the message."
+        },
+        "senderAlias": {
+          "type": "string",
+          "description": "The alias of the user at the time of sending."
+        },
+        "text": {
+          "type": "string",
+          "description": "Content of the chat message."
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Server timestamp of when the message was sent.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "senderId",
+        "senderAlias",
+        "text",
         "timestamp"
       ]
     },
@@ -700,11 +735,27 @@
           "schema": {
             "$ref": "#/backend/entities/ChatMessage"
           },
-          "description": "Stores chat messages between users.  Security rules should ensure only the sender and receiver can access the message. Consider subcollections under user documents for scalability.",
+          "description": "Stores private chat messages between users. Security rules should ensure only the sender and receiver can access the message.",
           "params": [
             {
               "name": "messageId",
               "description": "The unique identifier of the chat message."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/community_messages/{messageId}",
+        "definition": {
+          "entityName": "CommunityMessage",
+          "schema": {
+            "$ref": "#/backend/entities/CommunityMessage"
+          },
+          "description": "Stores public messages in a community chat room. Readable and writable by any authenticated user.",
+          "params": [
+            {
+              "name": "messageId",
+              "description": "The unique identifier of the community message."
             }
           ]
         }
@@ -750,8 +801,6 @@
         }
       }
     ],
-    "reasoning": "This Firestore structure prioritizes security and scalability for the EdTech platform, focusing on authorization independence and clear access patterns. It leverages path-based ownership for user-specific data and membership maps for collaborative data access, eliminating the need for `get()` calls in security rules and ensuring atomic operations.\n\nThe core principle is **Authorization Independence**. For the `/artifacts/{appId}/public/data/digital_purchases` collection, even though the data is 'public', security is maintained because each document contains the `userId`. Rules are structured to ensure only the authenticated user can create a purchase request for themselves. The `appId` parameter in the path allows for segregation and management of data within specific application contexts, which is useful for multi-tenant environments or different versions of the EdTech platform.\n\n**QAPs (Rules are not Filters):**\n*   The structure supports secure `list` operations by segregating data into collections with homogeneous security postures. For example, purchase requests are stored in a dedicated collection `/artifacts/{appId}/public/data/digital_purchases`, where access is controlled based on the `userId` within each document, allowing for listing purchases securely.\n\n**Denormalization**: The `userId` is denormalized into the `/artifacts/{appId}/public/data/digital_purchases` collection, where access control can depend directly on the attributes stored in the document. A new `/instructors/{instructorId}/reviews/{reviewId}` path is added for storing student reviews. This is publicly readable but writing is restricted to authenticated users to prevent spam. A new collection for `instructors` has been added to support the admin dashboard functionality, with rules initially allowing any signed-in user to manage them for ease of prototyping.\n\n**Explicit State Modeling:** The `Purchase` entity includes a `status` field to explicitly model the state of a purchase (e.g., 'Awaiting Payment', 'Completed', 'Refunded'). This avoids inferring state from multiple fields, enhancing clarity and simplifying security rules."
+    "reasoning": "This Firestore structure prioritizes security and scalability for the EdTech platform, focusing on authorization independence and clear access patterns. It leverages path-based ownership for user-specific data and membership maps for collaborative data access, eliminating the need for `get()` calls in security rules and ensuring atomic operations.\n\nThe core principle is **Authorization Independence**. For the `/artifacts/{appId}/public/data/digital_purchases` collection, even though the data is 'public', security is maintained because each document contains the `userId`. Rules are structured to ensure only the authenticated user can create a purchase request for themselves. The `appId` parameter in the path allows for segregation and management of data within specific application contexts, which is useful for multi-tenant environments or different versions of the EdTech platform.\n\n**QAPs (Rules are not Filters):**\n*   The structure supports secure `list` operations by segregating data into collections with homogeneous security postures. For example, purchase requests are stored in a dedicated collection `/artifacts/{appId}/public/data/digital_purchases`, where access is controlled based on the `userId` within each document, allowing for listing purchases securely.\n\n**Denormalization**: The `userId` is denormalized into the `/artifacts/{appId}/public/data/digital_purchases` collection, where access control can depend directly on the attributes stored in the document. A new `/instructors/{instructorId}/reviews/{reviewId}` path is added for storing student reviews. This is publicly readable but writing is restricted to authenticated users to prevent spam. A new collection for `instructors` has been added to support the admin dashboard functionality, with rules initially allowing any signed-in user to manage them for ease of prototyping.\n\nA new `community_messages` collection is added for the public chat feature. Security rules are configured to allow any authenticated user to read from and write to this collection, fostering an open communication environment for students. Updates and deletes are disallowed to maintain the integrity of the chat history."
   }
 }
-
-    

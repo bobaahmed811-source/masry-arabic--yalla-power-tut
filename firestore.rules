@@ -16,19 +16,6 @@
  *   path `/artifacts/{appId}/public/data/digital_purchases` to segregate it from core
  *   application data while maintaining security through denormalized ownership fields.
  *
- * Key Security Decisions:
- * - User Listing Disabled: To protect user privacy, it is not possible to list all documents
- *   in the `/users` collection.
- * - Public vs. Private: Publicly readable data (e.g., `/courses`) is separated from
- *   private user data. Writes to public collections are locked down, awaiting a clear
- *   administrative or ownership role system.
- * - Secure Listing: General `list` operations on collections containing sensitive or mixed-privacy
- *   data (like `/messages` or `/digital_purchases`) are disabled to prevent data leakage. Clients
- *   are expected to fetch documents by their specific ID.
- * - Missing Relationships: For features like course enrollments where the authorization
- *   data (e.g., a list of enrolled user IDs on a course document) is not yet defined in the data
- *   model, access is denied by default with a `// TODO:` note for future implementation.
- *
  */
 rules_version = '2';
 service cloud.firestore {
@@ -200,6 +187,19 @@ service cloud.firestore {
       allow update: if resource != null && isOwner(resource.data.senderId) && request.resource.data.senderId == resource.data.senderId;
       allow delete: if resource != null && isSenderOrReceiver();
     }
+    
+    /**
+     * @description Public community chat messages.
+     * @path /community_messages/{messageId}
+     * @allow (read, list) Any signed-in user can read the community chat.
+     * @allow (create) Any signed-in user can send a message, but only as themselves.
+     * @deny (update, delete) No one can edit or delete messages to maintain chat integrity.
+     */
+    match /community_messages/{messageId} {
+      allow get, list: if isSignedIn();
+      allow create: if isSignedIn() && request.resource.data.senderId == request.auth.uid;
+      allow update, delete: if false;
+    }
 
     // --------------------------------
     // Application & Transactional Data
@@ -220,5 +220,3 @@ service cloud.firestore {
     }
   }
 }
-
-    
