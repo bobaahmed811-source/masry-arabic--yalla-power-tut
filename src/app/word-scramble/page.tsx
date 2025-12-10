@@ -3,6 +3,8 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useDrag, useDrop, DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 // === Game Data ===
 const ALIAS = "تحتمس الصغير";
@@ -92,6 +94,7 @@ const SortableWord = ({ id, word, index, moveWord, isLocked }: { id: any, word: 
     </div>
   );
 };
+
 
 // ===================================
 // GameContent Component (uses DND Hooks)
@@ -188,6 +191,9 @@ const GameContent = () => {
       return;
     }
   });
+  
+  // Drop target for the source words area
+  const [, sourceDrop] = useDrop(() => ({ accept: ItemTypes.WORD }));
 
   return (
     <div className="w-full max-w-2xl bg-[#0d284e] rounded-xl shadow-2xl dashboard-card" style={{ direction: 'rtl' }}>
@@ -197,7 +203,7 @@ const GameContent = () => {
       <div className="p-4 md:p-6">
 
         {/* Challenge Title */}
-        <h2 className="text-3xl font-extrabold text-[#FFD700] mb-4 text-center">رتّب كلمات الفراعنة 👑</h2>
+        <h2 className="text-3xl font-extrabold text-[#FFD700] mb-4 text-center royal-title">رتّب كلمات الفراعنة 👑</h2>
         <p className="text-gray-300 text-lg mb-6 text-center">قم بسحب وإفلات الكلمات لترتيب الجملة المصرية العامية بشكل صحيح.</p>
 
         {/* Sentence Area (Drop Container) */}
@@ -209,8 +215,8 @@ const GameContent = () => {
         >
           {currentWords.map((word, index) => (
             <SortableWord
-              key={index}
-              id={index} // The ID is the current index
+              key={`${word}-${index}`}
+              id={`${word}-${index}`}
               word={word}
               index={index}
               moveWord={moveWord}
@@ -238,24 +244,28 @@ const GameContent = () => {
         )}
 
         {/* Action Buttons */}
-        <div className="mt-6 flex justify-center space-x-4 space-x-reverse">
-          {!isCorrect && (
-            <button
+        <div className="mt-6 flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4 sm:space-x-reverse">
+          {!isCorrect ? (
+            <Button
               onClick={checkAnswer}
-              className="px-8 py-3 bg-blue-600 text-white font-bold rounded-lg shadow-xl hover:bg-blue-700 transition-colors transform hover:scale-105"
+              className="cta-button px-8 py-3 text-lg rounded-full w-full sm:w-auto"
             >
               <i className="fas fa-check ml-2"></i> تحقق من الإجابة
-            </button>
-          )}
-          {isCorrect && (
-            <button
+            </Button>
+          ) : (
+             <Button
               onClick={nextPuzzle}
-              className="px-8 py-3 bg-[#FFD700] text-[#0d284e] font-bold rounded-lg shadow-xl hover:bg-[#d6b876] transition-colors transform hover:scale-105"
+              className="cta-button bg-green-600 hover:bg-green-700 px-8 py-3 text-lg rounded-full w-full sm:w-auto"
             >
               {currentPuzzleIndex < PUZZLES.length - 1 ? 'التحدي التالي' : 'إنهاء التحدي'}
               <i className="fas fa-arrow-left mr-2"></i>
-            </button>
+            </Button>
           )}
+           <Link href="/" className="w-full sm:w-auto">
+             <Button variant="outline" className="utility-button w-full">
+                العودة للوحة التحكم
+             </Button>
+          </Link>
         </div>
 
         {/* Progress Indicator */}
