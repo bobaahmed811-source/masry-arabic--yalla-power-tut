@@ -1,7 +1,9 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import React, 'use client';
+
+import { useState } from 'react';
 import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
@@ -9,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import { PlusCircle, Edit, Trash2, User, DollarSign, BookOpen } from 'lucide-react';
+import { PlusCircle, Edit, Trash2, User } from 'lucide-react';
 import Link from 'next/link';
 
 // Define the type for an instructor
@@ -189,5 +191,3 @@ const AdminDashboardPage = () => {
 };
 
 export default AdminDashboardPage;
-
-    
