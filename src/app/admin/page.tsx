@@ -55,7 +55,10 @@ const AdminDashboardPage = () => {
   };
 
   const handleSaveInstructor = async () => {
-    if (!firestore || !instructorsCollection) return;
+    if (!firestore || !instructorsCollection) {
+        toast({ variant: 'destructive', title: 'خطأ', description: 'خدمة قاعدة البيانات غير متاحة.' });
+        return;
+    }
     
     const { teacherName, email, shortBio, lessonPrice } = currentInstructor;
 
@@ -83,14 +86,17 @@ const AdminDashboardPage = () => {
         setCurrentInstructor({});
     } catch (error) {
         console.error("Error saving instructor: ", error);
-        toast({ variant: 'destructive', title: 'خطأ فادح', description: 'فشل حفظ بيانات المعلمة. يرجى مراجعة صلاحيات الوصول.' });
+        toast({ variant: 'destructive', title: 'خطأ فادح', description: (error instanceof Error) ? error.message : 'فشل حفظ بيانات المعلمة. يرجى مراجعة صلاحيات الوصول.' });
     } finally {
         setIsSubmitting(false);
     }
   };
 
   const handleDeleteInstructor = (instructorId: string) => {
-    if (!firestore) return;
+    if (!firestore) {
+        toast({ variant: 'destructive', title: 'خطأ', description: 'خدمة قاعدة البيانات غير متاحة.' });
+        return;
+    };
     const instructorDoc = doc(firestore, 'instructors', instructorId);
     deleteDocumentNonBlocking(instructorDoc);
     toast({ title: 'تم الحذف', description: 'تم حذف المعلمة بنجاح.' });
