@@ -5,14 +5,14 @@ import Link from 'next/link';
 import { useUser, useFirestore, useMemoFirebase } from '@/firebase';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
+import LandingPage from './landing/page'; // Import the LandingPage component
 
-export default function RoyalDashboard() {
+export default function HomePage() {
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
   const [pharaonicAlias, setPharaonicAlias] = useState("زائر فرعوني");
   const [aliasInput, setAliasInput] = useState("زائر فرعوني");
   const { toast } = useToast();
-
 
   const userDocRef = useMemoFirebase(() => {
     if (!firestore || !user) return null;
@@ -73,7 +73,21 @@ export default function RoyalDashboard() {
       toast({  variant: 'destructive', title: "خطأ", description: 'الرجاء إدخال اسم فرعوني صحيح.'});
     }
   };
+
+  if (isUserLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-[#0d284e]">
+        <p className="text-white text-xl">جاري التحقق من هوية الفرعون...</p>
+      </div>
+    );
+  }
+
+  // If user is not logged in, show the landing page
+  if (!user) {
+    return <LandingPage />;
+  }
   
+  // If user is logged in, show the royal dashboard
   return (
     <div className="antialiased min-h-screen bg-nile-dark p-6 md:p-12" style={{direction: 'rtl'}}>
        <div className="fixed top-4 left-4 z-50">
@@ -82,7 +96,6 @@ export default function RoyalDashboard() {
                 <span>{user ? 'تسجيل الخروج' : 'تسجيل الدخول'}</span>
             </Link>
         </div>
-
 
         <div className="max-w-7xl mx-auto w-full">
             <header className="text-center mb-6 pb-4 border-b-4 border-gold-accent">
@@ -268,3 +281,5 @@ export default function RoyalDashboard() {
     </div>
   );
 }
+
+    
