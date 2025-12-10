@@ -1,15 +1,18 @@
-
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useUser, useFirestore, useMemoFirebase } from '@/firebase';
+import { useUser, useFirestore, useMemoFirebase, useAuth } from '@/firebase';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 import LandingPage from './landing/page'; // Import the LandingPage component
+import { initiateSignOut } from '@/firebase/non-blocking-login';
+import { useRouter } from 'next/navigation';
 
 export default function HomePage() {
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
+  const auth = useAuth();
+  const router = useRouter();
   const [pharaonicAlias, setPharaonicAlias] = useState("زائر فرعوني");
   const [aliasInput, setAliasInput] = useState("زائر فرعوني");
   const { toast } = useToast();
@@ -74,6 +77,20 @@ export default function HomePage() {
     }
   };
 
+  const handleLogout = () => {
+    if (auth) {
+      initiateSignOut(auth, () => {
+        toast({
+          title: "تم تسجيل الخروج",
+          description: "نراك قريباً في رحلة أخرى في مملكة مصر القديمة!",
+        });
+        // The onAuthStateChanged listener in the provider will handle the redirect/UI update
+        // but we can force a reroute if needed.
+        router.push('/landing');
+      });
+    }
+  };
+
   if (isUserLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-[#0d284e]">
@@ -91,10 +108,17 @@ export default function HomePage() {
   return (
     <div className="antialiased min-h-screen bg-nile-dark p-6 md:p-12" style={{direction: 'rtl'}}>
        <div className="fixed top-4 left-4 z-50">
-           <Link href={user ? '/api/auth/logout' : '/login'} className="utility-button px-4 py-2 text-md font-bold rounded-lg flex items-center justify-center">
-                <i className={`fas ${user ? 'fa-sign-out-alt' : 'fa-sign-in-alt'} text-lg ml-2`}></i> 
-                <span>{user ? 'تسجيل الخروج' : 'تسجيل الدخول'}</span>
-            </Link>
+           {user ? (
+                <button onClick={handleLogout} className="utility-button px-4 py-2 text-md font-bold rounded-lg flex items-center justify-center">
+                    <i className="fas fa-sign-out-alt text-lg ml-2"></i> 
+                    <span>تسجيل الخروج</span>
+                </button>
+            ) : (
+                <Link href="/login" className="utility-button px-4 py-2 text-md font-bold rounded-lg flex items-center justify-center">
+                    <i className="fas fa-sign-in-alt text-lg ml-2"></i> 
+                    <span>تسجيل الدخول</span>
+                </Link>
+            )}
         </div>
 
         <div className="max-w-7xl mx-auto w-full">

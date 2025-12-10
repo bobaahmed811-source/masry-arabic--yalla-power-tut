@@ -8,6 +8,7 @@ import {
   User,
   NextOrObserver,
   onAuthStateChanged,
+  signOut,
   // Assume getAuth and app are initialized elsewhere
 } from 'firebase/auth';
 
@@ -57,5 +58,18 @@ export function initiateEmailSignIn(authInstance: Auth, email: string, password:
 export function updateProfileNonBlocking(user: User, profileData: { displayName?: string; photoURL?: string; }): void {
     updateProfile(user, profileData).catch(error => {
         console.error("Error updating profile:", error);
+    });
+}
+
+/** Initiate sign-out (non-blocking). */
+export function initiateSignOut(authInstance: Auth, callback?: () => void): void {
+  signOut(authInstance)
+    .then(() => {
+        if (callback) {
+            callback();
+        }
+    })
+    .catch(error => {
+        console.error("Error signing out:", error);
     });
 }
