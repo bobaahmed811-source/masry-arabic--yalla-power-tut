@@ -8,15 +8,15 @@ export const metadata: Metadata = {
   // Use a template to dynamically set the title for each page
   title: {
     template: '%s | Yalla Masry Academy',
-    default: 'Yalla Masry Academy - The Royal Way to Learn Egyptian Arabic',
+    default: 'Yalla Masry Academy - The Royal Way for Women & Children to Learn Egyptian Arabic',
   },
-  description: 'The premier online academy for mastering Egyptian Colloquial Arabic through interactive challenges, live tutors, and a vibrant community. Start your journey to fluency today!',
-  keywords: ['Learn Egyptian Arabic', 'Egyptian Colloquial Arabic', 'ECA', 'Study Arabic in Egypt', 'Egyptian Dialect', 'يلا مصري', 'تعلم العامية المصرية'],
+  description: 'The premier online academy for women and children to master Egyptian Colloquial Arabic with expert female tutors, interactive challenges, and a vibrant, safe community.',
+  keywords: ['Learn Egyptian Arabic for women', 'Egyptian Colloquial Arabic for children', 'ECA for women', 'Study Arabic online', 'Female Arabic tutors', 'Egyptian Dialect for kids', 'يلا مصري', 'تعلم العامية المصرية للنساء والأطفال'],
   
   // Open Graph metadata for social sharing (Facebook, LinkedIn, etc.)
   openGraph: {
-    title: 'Yalla Masry Academy: The Royal Way to Learn Egyptian Arabic',
-    description: 'The fun and effective way to master the Egyptian dialect with interactive challenges, live tutors, and a vibrant community.',
+    title: 'Yalla Masry Academy: The Royal Way for Women & Children to Learn Egyptian Arabic',
+    description: 'The fun, safe, and effective way for women and children to master the Egyptian dialect with expert female tutors.',
     type: 'website',
     url: 'https://www.yallamasry.com', // To be replaced with the actual domain
     images: [
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
         url: '/og-image.png', // To be created. Recommended size: 1200x630
         width: 1200,
         height: 630,
-        alt: 'Yalla Masry Academy Royal Banner',
+        alt: 'Yalla Masry Academy Royal Banner for Women and Children',
       },
     ],
     siteName: 'Yalla Masry Academy',
@@ -33,8 +33,8 @@ export const metadata: Metadata = {
   // Twitter specific metadata
   twitter: {
     card: 'summary_large_image',
-    title: 'Yalla Masry Academy: Master the Egyptian Dialect',
-    description: 'The fun, gamified platform for mastering Egyptian Colloquial Arabic.',
+    title: 'Yalla Masry Academy: Master the Egyptian Dialect for Women & Children',
+    description: 'The fun, gamified platform for women and kids to master Egyptian Colloquial Arabic.',
     // creator: '@YourTwitterHandle', // To be added later
     images: ['/twitter-image.png'], // To be created. Recommended size: 1200x675
   },

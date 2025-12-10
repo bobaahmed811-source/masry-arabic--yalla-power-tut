@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
@@ -25,7 +26,7 @@ const InstructorCard = ({ instructor }: { instructor: Instructor }) => (
     <div className="relative">
       <Image
         src={instructor.photo || 'https://picsum.photos/seed/' + instructor.id + '/400/250'}
-        alt={`صورة المعلم ${instructor.teacherName}`}
+        alt={`صورة المعلمة ${instructor.teacherName}`}
         width={400}
         height={250}
         className="w-full h-48 object-cover"
@@ -55,7 +56,7 @@ const InstructorCard = ({ instructor }: { instructor: Instructor }) => (
           </div>
         )}
       <Button asChild className="w-full cta-button mt-auto">
-        <Link href={`/booking?instructorId=${instructor.id}`}>احجز الآن</Link>
+        <Link href={`/booking?instructorId=${instructor.id}`}>احجزي الآن</Link>
       </Button>
     </CardContent>
   </Card>
@@ -80,14 +81,14 @@ export default function InstructorsPage() {
               <i className="fas fa-chalkboard-teacher text-5xl text-gold-accent"></i>
            </div>
           <h1 className="text-5xl md:text-6xl font-black royal-title mb-2">
-            قابل معلمات المملكة
+            قابلِ معلمات المملكة
           </h1>
           <p className="text-xl text-sand-ochre">
             نخبة من المعلمات المتميزات لمساعدتك في رحلتك لإتقان العامية المصرية.
           </p>
         </header>
 
-        {isLoading && <p className="text-center text-lg text-sand-ochre">جاري استدعاء سجلات المعلمين من ديوان المملكة...</p>}
+        {isLoading && <p className="text-center text-lg text-sand-ochre">جاري استدعاء سجلات المعلمات من ديوان المملكة...</p>}
         {error && <p className="text-center text-lg text-red-400">حدث خطأ ملكي أثناء استدعاء السجلات: {error.message}</p>}
 
         <main>

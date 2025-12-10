@@ -72,16 +72,16 @@ const AdminDashboardPage = () => {
         if (currentInstructor.id) {
             const instructorDoc = doc(firestore, 'instructors', currentInstructor.id);
             await updateDocumentNonBlocking(instructorDoc, instructorData);
-            toast({ title: 'تم التحديث', description: 'تم تحديث بيانات المعلم بنجاح.' });
+            toast({ title: 'تم التحديث', description: 'تم تحديث بيانات المعلمة بنجاح.' });
         } else {
             await addDocumentNonBlocking(instructorsCollection, instructorData);
-            toast({ title: 'تمت الإضافة', description: 'تم إضافة المعلم بنجاح.' });
+            toast({ title: 'تمت الإضافة', description: 'تم إضافة المعلمة بنجاح.' });
         }
         setIsDialogOpen(false);
         setCurrentInstructor({});
     } catch (error) {
         console.error("Error saving instructor: ", error);
-        toast({ variant: 'destructive', title: 'خطأ فادح', description: 'فشل حفظ بيانات المعلم. يرجى مراجعة صلاحيات الوصول.' });
+        toast({ variant: 'destructive', title: 'خطأ فادح', description: 'فشل حفظ بيانات المعلمة. يرجى مراجعة صلاحيات الوصول.' });
     } finally {
         setIsSubmitting(false);
     }
@@ -91,7 +91,7 @@ const AdminDashboardPage = () => {
     if (!firestore) return;
     const instructorDoc = doc(firestore, 'instructors', instructorId);
     deleteDocumentNonBlocking(instructorDoc);
-    toast({ title: 'تم الحذف', description: 'تم حذف المعلم بنجاح.' });
+    toast({ title: 'تم الحذف', description: 'تم حذف المعلمة بنجاح.' });
   };
 
   const openAddDialog = () => {
@@ -130,10 +130,10 @@ const AdminDashboardPage = () => {
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent className="dashboard-card text-white">
             <DialogHeader>
-              <DialogTitle className="royal-title">{currentInstructor.id ? 'تعديل بيانات المعلم' : 'إضافة معلم جديد'}</DialogTitle>
+              <DialogTitle className="royal-title">{currentInstructor.id ? 'تعديل بيانات المعلمة' : 'إضافة معلمة جديدة'}</DialogTitle>
             </DialogHeader>
             <div className="grid gap-4 py-4">
-              <Input name="teacherName" placeholder="اسم المعلم" value={currentInstructor.teacherName || ''} onChange={handleInputChange} className="bg-nile-dark border-sand-ochre text-white" />
+              <Input name="teacherName" placeholder="اسم المعلمة" value={currentInstructor.teacherName || ''} onChange={handleInputChange} className="bg-nile-dark border-sand-ochre text-white" />
               <Input name="email" type="email" placeholder="البريد الإلكتروني" value={currentInstructor.email || ''} onChange={handleInputChange} className="bg-nile-dark border-sand-ochre text-white" />
               <Input name="shortBio" placeholder="وصف قصير" value={currentInstructor.shortBio || ''} onChange={handleInputChange} className="bg-nile-dark border-sand-ochre text-white" />
               <Input name="lessonPrice" type="number" placeholder="سعر الساعة (بالدولار)" value={currentInstructor.lessonPrice || ''} onChange={handleInputChange} className="bg-nile-dark border-sand-ochre text-white" />
@@ -152,16 +152,16 @@ const AdminDashboardPage = () => {
         <Card className="dashboard-card">
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
-              <CardTitle className="royal-title text-2xl">إدارة المعلمين</CardTitle>
-              <CardDescription className="text-sand-ochre">إضافة وتعديل وحذف المعلمين في الأكاديمية.</CardDescription>
+              <CardTitle className="royal-title text-2xl">إدارة المعلمات</CardTitle>
+              <CardDescription className="text-sand-ochre">إضافة وتعديل وحذف المعلمات في الأكاديمية.</CardDescription>
             </div>
             <Button onClick={openAddDialog} className="cta-button">
               <PlusCircle className="ml-2 h-4 w-4" />
-              إضافة معلم
+              إضافة معلمة
             </Button>
           </CardHeader>
           <CardContent>
-            {isLoadingInstructors && <p className="text-center text-sand-ochre">جاري تحميل سجلات المعلمين...</p>}
+            {isLoadingInstructors && <p className="text-center text-sand-ochre">جاري تحميل سجلات المعلمات...</p>}
             {instructorsError && <p className="text-center text-red-500">حدث خطأ أثناء تحميل السجلات: {instructorsError.message}</p>}
             
             <div className="space-y-4">
@@ -188,15 +188,15 @@ const AdminDashboardPage = () => {
                       </AlertDialogTrigger>
                       <AlertDialogContent className="dashboard-card text-white">
                         <AlertDialogHeader>
-                          <AlertDialogTitle className="royal-title">هل أنت متأكد من قرارك الملكي؟</AlertDialogTitle>
+                          <AlertDialogTitle className="royal-title">هل أنت متأكدة من قرارك الملكي؟</AlertDialogTitle>
                           <AlertDialogDescription className="text-sand-ochre">
-                            هذا الإجراء سيقوم بحذف سجل المعلم بشكل نهائي. لا يمكن التراجع عن هذا الأمر.
+                            هذا الإجراء سيقوم بحذف سجل المعلمة بشكل نهائي. لا يمكن التراجع عن هذا الأمر.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel className="utility-button">إلغاء</AlertDialogCancel>
                           <AlertDialogAction onClick={() => handleDeleteInstructor(instructor.id)} className="cta-button bg-red-600 hover:bg-red-700 text-white">
-                            نعم، قم بالحذف
+                            نعم، قومي بالحذف
                           </AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>

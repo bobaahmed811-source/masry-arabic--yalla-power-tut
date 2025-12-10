@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useMemo, useCallback } from 'react';
@@ -105,7 +106,7 @@ export default function BookingPage() {
       setBookingStatus('confirmed');
       toast({
         title: "✅ تم تسجيل طلب الحجز بنجاح",
-        description: "سيتم التواصل معك من قبل الإدارة لتأكيد الدفع والموعد.",
+        description: "سيتم التواصل معكِ من قبل الإدارة لتأكيد الدفع والموعد.",
       });
       setIsSubmitting(false);
     }, 1500);
@@ -117,7 +118,7 @@ export default function BookingPage() {
   }
 
   if (isLoadingInstructors) {
-    return <div className="text-center text-white p-10">جاري استدعاء سجلات المعلمين...</div>;
+    return <div className="text-center text-white p-10">جاري استدعاء سجلات المعلمات...</div>;
   }
 
   if (instructorsError) {
@@ -130,7 +131,7 @@ export default function BookingPage() {
         
         <div className="p-6 md:p-8 border-b-4 border-gold-accent bg-nile/50 rounded-t-xl text-center">
           <h1 className="text-4xl font-black royal-title mb-2">حجز درس فرعوني خاص 🔱</h1>
-          <p className="text-gray-300 text-lg">اختر الوقت المناسب لك من جداول المعلمين المعتمدين.</p>
+          <p className="text-gray-300 text-lg">اختر الوقت المناسب لكِ من جداول المعلمات المعتمدات.</p>
         </div>
 
         <div className="p-6 md:p-8">
@@ -208,7 +209,7 @@ export default function BookingPage() {
                     <CardTitle className="text-3xl font-bold text-white">تم استلام طلبك بنجاح!</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3 text-lg text-gray-300">
-                    <p>طلبك لحجز درس "<span className="font-bold text-sand-ochre">{selectedLesson.subject}</span>" مع المعلم/ة <span className="font-bold text-sand-ochre">{selectedLesson.teacherName}</span> هو الآن قيد المراجعة.</p>
+                    <p>طلبك لحجز درس "<span className="font-bold text-sand-ochre">{selectedLesson.subject}</span>" مع المعلمة <span className="font-bold text-sand-ochre">{selectedLesson.teacherName}</span> هو الآن قيد المراجعة.</p>
                     <p className="font-bold text-white bg-sand-ochre/10 p-3 rounded-lg">الخطوة التالية: ستقوم الإدارة بالتواصل معك عبر البريد الإلكتروني لتأكيد عملية الدفع وتفاصيل الدرس.</p>
                     <div className="pt-4">
                         <Button onClick={resetBooking} className="cta-button">

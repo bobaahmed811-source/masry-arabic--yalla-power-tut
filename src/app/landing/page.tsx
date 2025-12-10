@@ -20,10 +20,10 @@ const results = [
 ];
 
 const bonuses = [
-    { icon: '📱', title: 'تطبيق الممارسة اليومية', description: '50 عبارة مصرية أساسية مع نطق صوتي لتتدرب عليها كل يوم.' },
-    { icon: '📚', title: 'دليل الثقافة المصرية', description: 'ملف شامل يشرح كل ما تحتاج معرفته عن العادات والتقاليد في مصر.' },
-    { icon: '🎯', title: 'خطة تعلم شخصية', description: 'مرشدك الخاص سيقوم ببناء خطة مصممة خصيصاً لأهدافك وسرعتك في التعلم.' },
-    { icon: '💬', title: 'مجموعة دعم حصرية', description: 'تواصل مع طلاب جادين من جميع أنحاء العالم وشاركهم رحلتك.' }
+    { icon: '📱', title: 'تطبيق الممارسة اليومية', description: '50 عبارة مصرية أساسية مع نطق صوتي لتتدربي عليها كل يوم.' },
+    { icon: '📚', title: 'دليل الثقافة المصرية', description: 'ملف شامل يشرح كل ما تحتاجين معرفته عن العادات والتقاليد في مصر.' },
+    { icon: '🎯', title: 'خطة تعلم شخصية', description: 'مرشدتك الخاصة ستقوم ببناء خطة مصممة خصيصاً لأهدافك وسرعتك في التعلم.' },
+    { icon: '💬', title: 'مجموعة دعم حصرية للسيدات', description: 'تواصلي مع طالبات جادات من جميع أنحاء العالم وشاركهن رحلتك.' }
 ];
 
 const packages = [
@@ -33,13 +33,13 @@ const packages = [
 ];
 
 const faqs = [
-  { q: 'هل أحتاج إلى أي معرفة سابقة باللغة العربية؟', a: 'لا على الإطلاق! نبدأ معك من الصفر. دروسنا مصممة للمبتدئين تماماً الذين لا يعرفون حتى الحروف.' },
+  { q: 'هل أحتاج إلى أي معرفة سابقة باللغة العربية؟', a: 'لا على الإطلاق! نبدأ معكِ من الصفر. دروسنا مصممة للمبتدئات تماماً اللواتي لا يعرفن حتى الحروف.' },
   { q: 'كم مدة الحصة التعليمية؟', a: 'كل حصة مدتها 60 دقيقة كاملة من التعلم المكثف، والمحادثة المباشرة، والأنشطة الممتعة.' },
-  { q: 'هل الدروس فردية أم جماعية؟', a: 'نقدم كلاً من الدروس الفردية (1-on-1) والجماعية. يمكنك اختيار ما يناسب أسلوب تعلمك وميزانيتك.' },
+  { q: 'هل الدروس فردية أم جماعية؟', a: 'نقدم كلاً من الدروس الفردية (1-on-1) والجماعية. يمكنكِ اختيار ما يناسب أسلوب تعلمك وميزانيتك.' },
   { q: 'ما الفرق بين اللهجة المصرية والعربية الفصحى؟', a: 'اللهجة المصرية هي اللغة الحقيقية التي يتحدثها 100 مليون مصري في حياتهم اليومية. إنها عملية، ممتعة، وأسهل بكثير من الفصحى!' },
-  { q: 'هل يمكنني إلغاء أو إعادة جدولة الحصة؟', a: 'نعم بالتأكيد! نحن نتميز بالمرونة. يمكنك إعادة الجدولة قبل 24 ساعة من موعد الحصة مجاناً.' },
-  { q: 'كيف أعرف مستواي؟', a: 'لا تقلق! نقدم جلسة تقييم مجانية تماماً لتحديد مستواك بدقة، وبناء خطة تعليمية مخصصة لك.' },
-  { q: 'هل تقدمون شهادة إتمام؟', a: 'نعم! مع الباقة الملكية، ستحصل على شهادة إتمام معتمدة من الأكاديمية يمكنك إضافتها إلى سيرتك الذاتية.' }
+  { q: 'هل يمكنني إلغاء أو إعادة جدولة الحصة؟', a: 'نعم بالتأكيد! نحن نتميز بالمرونة. يمكنكِ إعادة الجدولة قبل 24 ساعة من موعد الحصة مجاناً.' },
+  { q: 'كيف أعرف مستواي؟', a: 'لا تقلقي! نقدم جلسة تقييم مجانية تماماً لتحديد مستواكِ بدقة، وبناء خطة تعليمية مخصصة لكِ.' },
+  { q: 'هل تقدمون شهادة إتمام؟', a: 'نعم! مع الباقة الملكية، ستحصلين على شهادة إتمام معتمدة من الأكاديمية يمكنك إضافتها إلى سيرتك الذاتية.' }
 ];
 
 export default function LandingPage() {
@@ -52,7 +52,7 @@ export default function LandingPage() {
             يلا مصري
           </h1>
           <p className="text-2xl md:text-3xl text-sand-ochre mb-8">
-            تكلم مصري بجد. مش بس عربي.
+            أكاديمية اللهجة المصرية للسيدات والأطفال
           </p>
           <div className="aspect-w-16 aspect-h-9 max-w-2xl mx-auto rounded-lg overflow-hidden shadow-2xl mb-8 border-4 border-gold-accent">
             <iframe
@@ -64,15 +64,15 @@ export default function LandingPage() {
               className="w-full h-full"
             ></iframe>
           </div>
-          <p className="text-2xl md:text-3xl font-bold mb-4">🔥 توقف عن دراسة العربية، وابدأ بعيشها.</p>
-          <p className="text-lg md:text-xl mb-6">تكلم مثل المصريين — بسرعة، بواقعية، وبمتعة.</p>
+          <p className="text-2xl md:text-3xl font-bold mb-4">🔥 توقفي عن دراسة العربية، وابدئي بعيشها.</p>
+          <p className="text-lg md:text-xl mb-6">تكلمي مثل المصريين — بسرعة، بواقعية، وبمتعة.</p>
           <p className="text-gray-300 max-w-3xl mx-auto mb-10">
-            أتقن اللهجة المصرية عبر الإنترنت مع معلمات متخصصات. دروس خصوصية فردية ونظام تحديات "حتشبسوت" الحصري المصمم خصيصاً للعامية.
+            أتقني اللهجة المصرية عبر الإنترنت مع معلمات متخصصات في بيئة آمنة ومخصصة للنساء والأطفال. دروس خصوصية فردية ونظام تحديات "حتشبسوت" الحصري.
           </p>
           
           <Card className="dashboard-card max-w-lg mx-auto text-left">
             <CardHeader>
-                <CardTitle className="royal-title text-2xl">🎁 عرض خاص للملوك الجدد</CardTitle>
+                <CardTitle className="royal-title text-2xl">🎁 عرض خاص للملكات الجديدات</CardTitle>
             </CardHeader>
             <CardContent>
                 <ul className="space-y-2 text-sand-ochre">
@@ -82,7 +82,7 @@ export default function LandingPage() {
                 </ul>
                 <Button asChild className="cta-button w-full mt-6 text-lg">
                     <a href="https://docs.google.com/forms/d/e/1FAIpQLScP9wcegTMCjY_l3B2dMhlRXE3KL32j4-dbqCsio0QiBXuURA/viewform?usp=preview" target="_blank" rel="noopener noreferrer">
-                        احجز جلستك الفرعونية المجانية الآن!
+                        احجزي جلستك الفرعونية المجانية الآن!
                     </a>
                 </Button>
             </CardContent>
@@ -93,7 +93,7 @@ export default function LandingPage() {
       {/* Testimonials */}
       <section className="py-16 bg-nile">
           <div className="max-w-6xl mx-auto px-4">
-              <h2 className="text-3xl md:text-4xl font-bold text-center royal-title mb-12">🌟 ماذا يقول طلابنا</h2>
+              <h2 className="text-3xl md:text-4xl font-bold text-center royal-title mb-12">🌟 ماذا تقول طالباتنا</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                   {testimonials.map((testimonial, index) => (
                       <Card key={index} className="bg-nile-dark border-sand-ochre text-center p-6">
@@ -108,7 +108,7 @@ export default function LandingPage() {
       {/* Guaranteed Results */}
       <section className="py-16">
         <div className="max-w-5xl mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-center royal-title mb-12">📊 نتائج مضمونة تراها بنفسك</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center royal-title mb-12">📊 نتائج مضمونة ترينها بنفسك</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {results.map((result, index) => (
               <div key={index} className="stat-card p-6 rounded-lg text-center">
@@ -162,7 +162,7 @@ export default function LandingPage() {
                           <div className="p-6 pt-0">
                                <Button asChild className="cta-button w-full mt-4 text-lg">
                                   <a href="https://docs.google.com/forms/d/e/1FAIpQLScP9wcegTMCjY_l3B2dMhlRXE3KL32j4-dbqCsio0QiBXuURA/viewform?usp=preview" target="_blank" rel="noopener noreferrer">
-                                      اختر هذه الباقة
+                                      اختاري هذه الباقة
                                   </a>
                               </Button>
                           </div>
@@ -194,7 +194,7 @@ export default function LandingPage() {
       {/* Contact */}
       <footer className="py-12 bg-nile-dark border-t-2 border-gold-accent">
           <div className="max-w-4xl mx-auto px-4 text-center">
-              <h2 className="text-3xl md:text-4xl font-bold royal-title mb-8">📞 تواصل معنا</h2>
+              <h2 className="text-3xl md:text-4xl font-bold royal-title mb-8">📞 تواصلي معنا</h2>
               <div className="space-y-4 text-lg text-sand-ochre">
                   <p>📧 **البريد الإلكتروني:** info@talkmasry.com</p>
                   <p>💬 **واتساب:** +20 XXX XXX XXXX</p>
@@ -204,7 +204,7 @@ export default function LandingPage() {
               <div className="mt-10">
                   <p className="text-2xl font-bold text-white mb-4">✨ رحلتك لإتقان اللهجة المصرية تبدأ من هنا!</p>
                   <Button asChild className="cta-button text-xl px-8 py-6 rounded-full">
-                      <a href="https://docs.google.com/forms/d/e/1FAIpQLScP9wcegTMCjY_l3B2dMhlRXE3KL32j4-dbqCsio0QiBXuURA/viewform?usp=preview" target="_blank" rel="noopener noreferrer">🚀 احجز جلستك المجانية الآن</a>
+                      <a href="https://docs.google.com/forms/d/e/1FAIpQLScP9wcegTMCjY_l3B2dMhlRXE3KL32j4-dbqCsio0QiBXuURA/viewform?usp=preview" target="_blank" rel="noopener noreferrer">🚀 احجزي جلستك المجانية الآن</a>
                   </Button>
               </div>
               <div className="mt-12 text-sm text-gray-500">
