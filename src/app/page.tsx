@@ -145,7 +145,7 @@ export default function RoyalDashboard() {
         logout_button: "Déconnexion",
         login_button: "Connexion",
       },
-      es: { 
+      es: {
         title: "Panel de Control Real", alias_label: "Tu Alias Faraónico:", alias_placeholder: "Introduce tu nombre faraónico aquí...", alias_button: "Actualizar Alias",
         library_button: "Biblioteca de Lecciones", review_button: "Palabras para Repasar", level_label: "Nivel Actual:", level_name: "Discípulo del Nilo", metrics_title: "Estadísticas de Progreso y Recursos",
         words_mastered_label: "Palabras Dominadas", nile_points_label: "Puntos del Nilo", streak_days_label: "Días Consecutivos", total_time_label: "Tiempo Total (h)",
@@ -167,7 +167,7 @@ export default function RoyalDashboard() {
         pronunciation_challenge_button: "Reto de Pronunciación",
         logout_button: "Cerrar Sesión", login_button: "Iniciar Sesión"
       },
-      it: { 
+      it: {
         title: "Pannello di Controllo Reale", alias_label: "Il Tuo Alias Faraonico:", alias_placeholder: "Inserisci qui il tuo nome faraonico...", alias_button: "Aggiorna Alias",
         library_button: "Libreria Lezioni", review_button: "Parole da Rivedere", level_label: "Livello Attuale:", level_name: "Discepolo del Nilo", metrics_title: "Statistiche Progressi e Risorse",
         words_mastered_label: "Parole Padroneggiate", nile_points_label: "Punti del Nilo", streak_days_label: "Giorni Consecutivi", total_time_label: "Tempo Totale (ore)",
@@ -189,7 +189,7 @@ export default function RoyalDashboard() {
         pronunciation_challenge_button: "Sfida di Pronuncia",
         logout_button: "Esci", login_button: "Accedi"
       },
-      nl: { 
+      nl: {
         title: "Koninklijk Bedieningspaneel", alias_label: "Jouw Faraonische Alias:", alias_placeholder: "Voer hier je faraonische naam in...", alias_button: "Alias Bijwerken",
         library_button: "Bibliotheek Beheerste Lessen", review_button: "Woorden om te Herhalen", level_label: "Huidig Niveau:", level_name: "Discipel van de Nijl", metrics_title: "Voortgang & Bronnen Statistieken",
         words_mastered_label: "Beheerste Woorden", nile_points_label: "Nijlpunten", streak_days_label: "Opeenvolgende Dagen", total_time_label: "Totale Tijd (u)",
@@ -211,7 +211,7 @@ export default function RoyalDashboard() {
         pronunciation_challenge_button: "Uitspraakuitdaging",
         logout_button: "Uitloggen", login_button: "Inloggen"
       },
-      de: { 
+      de: {
         title: "Königliches Kontrollfeld", alias_label: "Dein Pharaonischer Alias:", alias_placeholder: "Gib hier deinen pharaonischen Namen ein...", alias_button: "Alias Aktualisieren",
         library_button: "Bibliothek der gemeisterten Lektionen", review_button: "Zu wiederholende Wörter", level_label: "Aktuelles Level:", level_name: "Schüler des Nils", metrics_title: "Fortschritts- & Ressourcenstatistiken",
         words_mastered_label: "Beherrschte Wörter", nile_points_label: "Nil-Punkte", streak_days_label: "Aufeinanderfolgende Tage", total_time_label: "Gesamtzeit (Std.)",
@@ -241,63 +241,67 @@ export default function RoyalDashboard() {
         const texts = lang[currentLang];
         const isRtl = currentLang === 'ar';
     
-        document.documentElement.dir = isRtl ? 'rtl' : 'ltr';
-        document.documentElement.lang = currentLang;
-    
-        const querySelector = (selector: string) => document.querySelector(selector) as HTMLElement;
-
-        if(querySelector('#main-title')) querySelector('#main-title').textContent = texts.title;
-        if(querySelector('#alias-label')) querySelector('#alias-label').textContent = texts.alias_label;
-        const aliasInputEl = querySelector('#alias-input') as HTMLInputElement;
-        if(aliasInputEl) aliasInputEl.placeholder = texts.alias_placeholder;
-        if(querySelector('#update-alias-button')) querySelector('#update-alias-button').textContent = texts.alias_button;
-        if(querySelector('#current-user-rank')) querySelector('#current-user-rank').textContent = pharaonicAlias;
+        if (typeof document !== 'undefined') {
+            document.documentElement.dir = isRtl ? 'rtl' : 'ltr';
+            document.documentElement.lang = currentLang;
         
-        if(querySelector('#library-button-text')) querySelector('#library-button-text').textContent = texts.library_button;
-        if(querySelector('#review-button-text')) querySelector('#review-button-text').textContent = texts.review_button;
+            const querySelector = (selector: string) => document.querySelector(selector) as HTMLElement;
 
-        if(querySelector('#placement-test-button-text')) querySelector('#placement-test-button-text').textContent = texts.placement_test_button;
-        if(querySelector('#comic-studio-button-text')) querySelector('#comic-studio-button-text').textContent = texts.comic_studio_button;
-        if(querySelector('#museum-button-text')) querySelector('#museum-button-text').textContent = texts.museum_button;
-        if(querySelector('#store-button-text')) querySelector('#store-button-text').textContent = texts.store_button;
-        if(querySelector('#tutor-button-text')) querySelector('#tutor-button-text').textContent = texts.tutor_button;
-        if(querySelector('#word-scramble-button-text')) querySelector('#word-scramble-button-text').textContent = texts.word_scramble_button;
-        if(querySelector('#dialogue-challenge-button-text')) querySelector('#dialogue-challenge-button-text').textContent = texts.dialogue_challenge_button;
-        if(querySelector('#booking-button-text')) querySelector('#booking-button-text').textContent = texts.booking_button;
-        if(querySelector('#quran-button-text')) querySelector('#quran-button-text').textContent = texts.quran_button;
-        if(querySelector('#pronunciation-challenge-button-text')) querySelector('#pronunciation-challenge-button-text').textContent = texts.pronunciation_challenge_button;
+            if(querySelector('#main-title')) querySelector('#main-title').textContent = texts.title;
+            if(querySelector('#alias-label')) querySelector('#alias-label').textContent = texts.alias_label;
+            const aliasInputEl = querySelector('#alias-input') as HTMLInputElement;
+            if(aliasInputEl) aliasInputEl.placeholder = texts.alias_placeholder;
+            if(querySelector('#update-alias-button')) querySelector('#update-alias-button').textContent = texts.alias_button;
+            if(querySelector('#current-user-rank')) querySelector('#current-user-rank').textContent = pharaonicAlias;
+            
+            if(querySelector('#library-button-text')) querySelector('#library-button-text').textContent = texts.library_button;
+            if(querySelector('#review-button-text')) querySelector('#review-button-text').textContent = texts.review_button;
 
-        if (user) {
-          if (querySelector('#auth-link-text')) querySelector('#auth-link-text').textContent = texts.logout_button;
-        } else {
-          if (querySelector('#auth-link-text')) querySelector('#auth-link-text').textContent = texts.login_button;
-        }
-    
-        const levelDisplay = querySelector('#level-display');
-        if (levelDisplay) levelDisplay.innerHTML = `${texts.level_label} <span class="text-sand-ochre">${texts.level_name}</span>`;
+            if(querySelector('#placement-test-button-text')) querySelector('#placement-test-button-text').textContent = texts.placement_test_button;
+            if(querySelector('#comic-studio-button-text')) querySelector('#comic-studio-button-text').textContent = texts.comic_studio_button;
+            if(querySelector('#museum-button-text')) querySelector('#museum-button-text').textContent = texts.museum_button;
+            if(querySelector('#store-button-text')) querySelector('#store-button-text').textContent = texts.store_button;
+            if(querySelector('#tutor-button-text')) querySelector('#tutor-button-text').textContent = texts.tutor_button;
+            if(querySelector('#word-scramble-button-text')) querySelector('#word-scramble-button-text').textContent = texts.word_scramble_button;
+            if(querySelector('#dialogue-challenge-button-text')) querySelector('#dialogue-challenge-button-text').textContent = texts.dialogue_challenge_button;
+            if(querySelector('#booking-button-text')) querySelector('#booking-button-text').textContent = texts.booking_button;
+            if(querySelector('#quran-button-text')) querySelector('#quran-button-text').textContent = texts.quran_button;
+            if(querySelector('#pronunciation-challenge-button-text')) querySelector('#pronunciation-challenge-button-text').textContent = texts.pronunciation_challenge_button;
 
-        const userIdDisplay = querySelector('#user-id-display');
-        if (userIdDisplay) {
             if (user) {
-                userIdDisplay.innerHTML = `<i class="fas fa-user-circle ${isRtl ? 'ml-1' : 'mr-1'}"></i> ${texts.user_id_label} <span>${user.uid}</span>`;
-                userIdDisplay.classList.remove('hidden');
+              if (querySelector('#auth-link-text')) querySelector('#auth-link-text').textContent = texts.logout_button;
             } else {
-                userIdDisplay.classList.add('hidden');
+              if (querySelector('#auth-link-text')) querySelector('#auth-link-text').textContent = texts.login_button;
+            }
+        
+            const levelDisplay = querySelector('#level-display');
+            if (levelDisplay) levelDisplay.innerHTML = `${texts.level_label} <span class="text-sand-ochre">${texts.level_name}</span>`;
+
+            const userIdDisplay = querySelector('#user-id-display');
+            if (userIdDisplay) {
+                if (user) {
+                    userIdDisplay.innerHTML = `<i class="fas fa-user-circle ${isRtl ? 'ml-1' : 'mr-1'}"></i> ${texts.user_id_label} <span>${user.uid}</span>`;
+                    userIdDisplay.classList.remove('hidden');
+                } else {
+                    userIdDisplay.classList.add('hidden');
+                }
             }
         }
     }
     
-    setLanguage('ar');
+    
+    if (typeof document !== 'undefined') {
+        setLanguage('ar');
+        const langSelect = document.getElementById('language-select') as HTMLSelectElement;
+        const handleLangChange = (e: Event) => {
+          setLanguage((e.target as HTMLSelectElement).value);
+        }
+        langSelect?.addEventListener('change', handleLangChange);
 
-    const langSelect = document.getElementById('language-select') as HTMLSelectElement;
-    const handleLangChange = (e: Event) => {
-      setLanguage((e.target as HTMLSelectElement).value);
+        return () => {
+            langSelect?.removeEventListener('change', handleLangChange);
+        };
     }
-    langSelect?.addEventListener('change', handleLangChange);
-
-    return () => {
-        langSelect?.removeEventListener('change', handleLangChange);
-    };
 
   }, [pharaonicAlias, user, isUserLoading]);
 
