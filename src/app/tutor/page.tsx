@@ -1,11 +1,9 @@
-
 'use client';
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { getTutorResponse } from '@/app/actions';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -62,23 +60,20 @@ export default function TutorPage() {
     const userMessage: ChatMessage = { type: 'user', text: values.question };
     setChatHistory(prev => [...prev, userMessage]);
 
-    const result = await getTutorResponse(values);
+    // Mocking AI response as Genkit is removed
+    setTimeout(() => {
+        const tutorMessage: ChatMessage = { type: 'tutor', text: "عفواً، خدمة المعلم الذكي معطلة مؤقتاً. يرجى المحاولة مرة أخرى لاحقاً." };
+        setChatHistory(prev => [...prev, tutorMessage]);
+        toast({
+            variant: 'destructive',
+            title: '❌ الميزة معطلة',
+            description:
+            'فشل الحصول على إجابة. خدمة المعلم الذكي معطلة مؤقتاً.',
+        });
+        setIsLoading(false);
+    }, 1000);
+    
     form.resetField('question');
-
-    if (result.success) {
-      const tutorMessage: ChatMessage = { type: 'tutor', text: result.success };
-      setChatHistory(prev => [...prev, tutorMessage]);
-    } else {
-      toast({
-        variant: 'destructive',
-        title: '❌ حدث خطأ',
-        description:
-          result.error ||
-          'فشل الحصول على إجابة. يرجى المحاولة مرة أخرى.',
-      });
-    }
-
-    setIsLoading(false);
   }
 
   return (

@@ -20,7 +20,6 @@ import {
   StopCircle,
   Save,
 } from 'lucide-react';
-import { getComicDialog } from './actions';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useUser, useFirestore } from '@/firebase';
@@ -60,10 +59,10 @@ const StatusDisplay = ({
 
 export default function ComicStudioPage() {
   const [scene, setScene] = useState('family');
-  const [dialogue, setDialogue] = useState<string[]>([]);
+  const [dialogue, setDialogue] = useState<string[]>(['ميزة توليد الحوار معطلة مؤقتاً.', 'يرجى المحاولة مرة أخرى لاحقاً.', '...']);
   const [status, setStatus] = useState<{ type: StatusType; message: string }>({
-    type: 'info',
-    message: 'جاهز للعمل.',
+    type: 'error',
+    message: 'الميزة معطلة مؤقتاً.',
   });
   const [isGenerating, setIsGenerating] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
@@ -86,29 +85,11 @@ export default function ComicStudioPage() {
   }, [audioUrl]);
 
   const handleGenerateDialog = async () => {
-    setIsGenerating(true);
-    setStatus({ type: 'loading', message: 'جاري توليد الحوار...' });
-    setDialogue([]);
-
-    const result = await getComicDialog({ scene });
-
-    if (result.success && result.success.length === 3) {
-      setDialogue(result.success);
-      setStatus({ type: 'success', message: 'تم! يمكنك الآن بدء التسجيل.' });
-      toast({
-        title: 'تم توليد الحوار بنجاح!',
-        description: 'حان دورك الآن لتؤدي المشهد بصوتك.',
-      });
-    } else {
-      setStatus({ type: 'error', message: 'فشل التوليد. حاول مجدداً.' });
-      toast({
+    toast({
         variant: 'destructive',
-        title: 'حدث خطأ',
-        description:
-          result.error || 'لم نتمكن من توليد الحوار. يرجى المحاولة مرة أخرى.',
-      });
-    }
-    setIsGenerating(false);
+        title: 'الميزة معطلة',
+        description: 'ميزة توليد الحوار بالذكاء الاصطناعي معطلة مؤقتاً بسبب مشاكل فنية.',
+    });
   };
 
   const startRecording = async () => {
@@ -241,9 +222,9 @@ export default function ComicStudioPage() {
                         </Select>
                     </div>
 
-                    <Button onClick={handleGenerateDialog} disabled={isGenerating} className="comic-btn-primary">
+                    <Button onClick={handleGenerateDialog} disabled={true} className="comic-btn-primary">
                         <WandSparkles className="ml-2 h-4 w-4" />
-                        {isGenerating ? 'جاري التوليد...' : 'توليد حوار العامية (Gemini)'}
+                        توليد حوار العامية (معطل)
                     </Button>
                     
                     <StatusDisplay type={status.type} message={status.message} />

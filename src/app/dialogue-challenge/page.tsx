@@ -1,12 +1,12 @@
-
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { getDialogueEvaluation } from './actions';
 import { useUser } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { User, Store, Crown, Medal, Skull, Loader2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+
 
 // === Story Data ===
 const storyScenario = [
@@ -52,6 +52,46 @@ const storyScenario = [
     options: null,
   },
 ];
+
+const mockEvaluateDialogue = async (input: { userAnswer: string, choiceType: 'correct' | 'wrong' | 'good' | 'excellent' }) => {
+  let score = 0;
+  let feedback = '';
+  let nextId = 0;
+
+  switch (input.choiceType) {
+    case 'excellent':
+      score = 75;
+      feedback =
+        "أحسنت! الإجابة كانت كاملة ومهذبة جداً باستخدام 'شكراً جزيلاً'. لقد استخدمت لغة السوق اليومية بطلاقة. حصلت على مكافأة جودة التعبير!";
+      nextId = 5;
+      break;
+    case 'good':
+      score = 50;
+      feedback =
+        "إجابة صحيحة ومفهومة. لكن تذّكر أن استخدام كلمة 'شكراً' و 'اتفضل' يزيد من طلاقتك الاجتماعية في مصر. حصلت على نقاط الإجابة الصحيحة.";
+      nextId = 5;
+      break;
+    case 'correct':
+      score = 50;
+      feedback =
+        "إجابة صحيحة. لقد طلبت ما تريده بوضوح ولباقة باستخدام 'لو سمحت'.";
+      nextId = 3;
+      break;
+    case 'wrong':
+      score = -20;
+      feedback =
+        'توقفي! هذا السؤال غير مناسب في سياق شراء الطماطم. راجعِ مفردات الحوار في المتجر.';
+      nextId = 2; // Return to the same question
+      break;
+    default:
+      score = 0;
+      feedback = 'حدث خطأ في تقييم الإجابة.';
+      nextId = 2;
+  }
+
+  return { success: { score, feedback, nextId } };
+}
+
 
 // === Sub-components ===
 
@@ -101,6 +141,7 @@ DialogueBubble.displayName = "DialogueBubble";
 
 export default function DialogueChallengePage() {
   const { user, isUserLoading } = useUser();
+  const { toast } = useToast();
   const [alias, setAlias] = useState("تحتمس القوي"); // Default alias
   const [nilePoints, setNilePoints] = useState(1200);
 
@@ -143,8 +184,8 @@ export default function DialogueChallengePage() {
     setIsEvaluating(true);
     setFeedback(null);
   
-    // 3. Get evaluation from AI
-    const result = await getDialogueEvaluation({ userAnswer: userText, choiceType: choice.type });
+    // 3. Get evaluation from mock function
+    const result = await mockEvaluateDialogue({ userAnswer: userText, choiceType: choice.type });
   
     if (result.success) {
       const evaluation = result.success;
@@ -200,7 +241,7 @@ export default function DialogueChallengePage() {
 
     } else {
       setIsEvaluating(false);
-      setFeedback({ message: result.error || 'حدث خطأ في التقييم. حاول مرة أخرى.', score: 0, isPositive: false });
+      setFeedback({ message: 'حدث خطأ في التقييم. حاول مرة أخرى.', score: 0, isPositive: false });
     }
   }, [alias, currentStepId, isEvaluating, isChallengeComplete]);
   

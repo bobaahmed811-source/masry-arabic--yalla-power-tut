@@ -201,12 +201,6 @@ export default function HomePage() {
                       icon={<i className="fas fa-map-signs"></i>}
                     />
                     <ChallengeLink
-                      href="/tutor"
-                      title="المعلم الخصوصي الذكي"
-                      description="احصلي على إجابات فورية لأسئلتك."
-                      icon={<i className="fas fa-user-graduate"></i>}
-                    />
-                    <ChallengeLink
                       href="/audio-library"
                       title="خزانة الأصوات"
                       description="استمعي للنطق الصحيح للعبارات."

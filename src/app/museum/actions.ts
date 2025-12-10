@@ -1,7 +1,6 @@
-'use server';
+"use server";
 
-import { textToSpeech } from '@/ai/flows/text-to-speech-flow';
-import { z } from 'zod';
+import { z } from "zod";
 
 const InputSchema = z.object({
   text: z.string(),
@@ -9,22 +8,11 @@ const InputSchema = z.object({
 
 /**
  * Server action to get audio for a given text.
- * It uses a Genkit flow to convert text to speech.
+ * This is a placeholder as the Genkit flow has been removed.
  */
 export async function getSpeechAudio(values: z.infer<typeof InputSchema>) {
-  const validatedFields = InputSchema.safeParse(values);
-
-  if (!validatedFields.success) {
-    return { error: 'Invalid input.' };
-  }
-
-  const { text } = validatedFields.data;
-
-  try {
-    const result = await textToSpeech({ text });
-    return { success: result.audio };
-  } catch (error) {
-    console.error('Error generating speech audio:', error);
-    return { error: 'Failed to get audio from the AI. Please try again.' };
-  }
+  console.log("getSpeechAudio called with:", values.text);
+  // The Genkit functionality was removed due to dependency conflicts.
+  // Returning an error to indicate the feature is disabled.
+  return { error: "ميزة تحويل النص إلى كلام معطلة مؤقتاً." };
 }
