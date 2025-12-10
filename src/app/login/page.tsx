@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -51,9 +50,11 @@ export default function LoginPage() {
   const { toast } = useToast();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
     initiateEmailSignIn(auth, email, password, (result) => {
         if(result.success && result.user) {
             toast({
@@ -65,13 +66,11 @@ export default function LoginPage() {
             let description = "البريد الإلكتروني أو كلمة السر غير صحيحة. يرجى المحاولة مرة أخرى.";
             switch(result.error.code) {
                 case 'auth/user-not-found':
+                case 'auth/invalid-credential':
                     description = "هذا الحساب غير مسجل. هل تودين إنشاء حساب جديد؟";
                     break;
                 case 'auth/wrong-password':
                     description = "كلمة السر غير صحيحة. يرجى المحاولة مرة أخرى.";
-                    break;
-                case 'auth/invalid-credential':
-                    description = "بيانات الدخول غير صحيحة. يرجى التحقق من البريد الإلكتروني وكلمة السر.";
                     break;
             }
             toast({
@@ -80,6 +79,7 @@ export default function LoginPage() {
                 description: description
             });
         }
+        setIsSubmitting(false);
     });
   };
 
@@ -106,6 +106,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="bg-nile-dark border-sand-ochre text-white placeholder:text-sand-ochre/50 focus:ring-gold-accent"
+                  disabled={isSubmitting}
                 />
               </div>
               <div className="grid gap-2">
@@ -125,13 +126,11 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="bg-nile-dark border-sand-ochre text-white focus:ring-gold-accent"
+                  disabled={isSubmitting}
                 />
               </div>
-              <Button type="submit" className="w-full cta-button">
-                تسجيل الدخول
-              </Button>
-              <Button variant="outline" className="w-full utility-button" disabled>
-                الدخول بواسطة Google (قريباً)
+              <Button type="submit" className="w-full cta-button" disabled={isSubmitting}>
+                {isSubmitting ? 'جاري الدخول...' : 'تسجيل الدخول'}
               </Button>
             </div>
           </form>

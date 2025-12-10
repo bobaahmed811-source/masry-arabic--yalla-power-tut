@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -73,9 +72,9 @@ export default function SignupPage() {
                 if(profileResult.success) {
                     toast({
                         title: "تم إنشاء الحساب بنجاح!",
-                        description: `مرحباً بكِ يا ${name}! سيتم توجيهك الآن إلى الخطوة التالية.`
+                        description: `مرحباً بكِ يا ${name}! سيتم توجيهك الآن إلى لوحة التحكم.`
                     });
-                    // Redirect to the onboarding flow
+                    // Redirect to the onboarding flow or main dashboard
                     router.push('/goals');
                 } else {
                      toast({
@@ -175,5 +174,3 @@ export default function SignupPage() {
     </div>
   );
 }
-
-    
