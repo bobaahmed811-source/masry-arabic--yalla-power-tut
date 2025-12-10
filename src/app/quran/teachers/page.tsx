@@ -9,11 +9,12 @@ import { ArrowRight, GraduationCap, Loader2 } from 'lucide-react';
 interface Instructor {
   id: string;
   teacherName: string;
-  specialty?: string;
+  shortBio?: string;
   photo?: string;
   status?: 'Active' | 'Inactive';
   lessonPrice?: number;
-  isQuranTeacher?: boolean; // Hypothetical field to filter Quran teachers
+  // This field would ideally be used to filter Quran teachers specifically
+  specialties?: string[];
 }
 
 const TeacherCard = ({ teacher }: { teacher: Instructor }) => (
@@ -26,7 +27,7 @@ const TeacherCard = ({ teacher }: { teacher: Instructor }) => (
       ></span>
     </div>
     <h3 className="text-xl font-bold royal-title mb-1">{teacher.teacherName}</h3>
-    <p className="text-sm text-sand-ochre mb-3 flex-grow">{teacher.specialty || 'معلم قرآن كريم'}</p>
+    <p className="text-sm text-sand-ochre mb-3 flex-grow">{teacher.shortBio || 'معلم/ة قرآن كريم'}</p>
     {teacher.lessonPrice && (
       <div className="text-lg font-bold text-white mb-4 bg-nile-dark/30 py-1 px-3 rounded-full self-center">${teacher.lessonPrice} / ساعة</div>
     )}
@@ -42,11 +43,11 @@ const TeacherCard = ({ teacher }: { teacher: Instructor }) => (
 export default function TeachersPage() {
   const firestore = useFirestore();
   
-  // In a real app, you might have a dedicated field like `isQuranTeacher: true`
-  // For now, we fetch all instructors and could filter on the client, or assume all are Quran teachers for this page.
+  // This query fetches all instructors. 
+  // For a real app, you would filter for Quran teachers specifically.
+  // e.g., query(collection(firestore, 'instructors'), where('specialties', 'array-contains', 'Quran'))
   const instructorsCollection = useMemoFirebase(() => {
     if (!firestore) return null;
-    // This query would ideally filter for Quran teachers, e.g., where('tags', 'array-contains', 'quran')
     return collection(firestore, 'instructors'); 
   }, [firestore]);
 
