@@ -12,7 +12,7 @@ import { useRouter } from 'next/navigation';
 const Logo = () => (
     <div className="flex items-center justify-center space-x-2 space-x-reverse">
         <svg
-            className="w-16 h-16 text-gold-accent"
+            className="w-12 h-12 text-gold-accent"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -31,8 +31,8 @@ const Logo = () => (
             <path d="M4.93 19.07l2.83-2.83"></path>
             <path d="M16.24 7.76l2.83-2.83"></path>
         </svg>
-        <span className="text-5xl md:text-6xl royal-title">
-            لوحة التحكم الملكية
+        <span className="text-4xl md:text-5xl font-black royal-title text-gold-accent">
+            يلا مصري
         </span>
     </div>
 );
@@ -201,7 +201,7 @@ export default function HomePage() {
                         </Link>
                          <Link href="/pronunciation-challenge" className="utility-button px-6 py-3 text-lg font-bold rounded-full flex items-center justify-center border-pink-400 text-pink-400">
                             <i className="fas fa-bullhorn text-xl ml-3"></i>
-                            <span>تحدي النطق الصحيح</span>
+                            <span>تحديات قوة حتشبسوت</span>
                         </Link>
                     </div>
                 </div>

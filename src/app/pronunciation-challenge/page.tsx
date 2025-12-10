@@ -27,9 +27,9 @@ import Link from 'next/link';
 // Dictionary for all UI texts
 const lang: Record<string, Record<string, string>> = {
   ar: {
-    title: 'تحدي النطق الملكي',
-    mentor: 'تحدي تلميذ النيل - الجملة الافتتاحية',
-    instructions: 'استمع إلى الجملة ورددها بصوت واضح.',
+    title: "تحديات قوة حتشبسوت الفرعونية",
+    mentor: "استمعي للمرسوم الملكي، ثم أعلني ولاءك بترديده",
+    instructions: 'استمع إلى الجملة ورددها بصوت واضح لتفعيل قوتك الفرعونية.',
     loading: 'جارٍ تجهيز صوت المرشد...',
     error: 'حدث خطأ: لا يمكن تشغيل الصوت.',
     record: 'سجل صوتك',
@@ -37,7 +37,7 @@ const lang: Record<string, Record<string, string>> = {
     stop_recording: 'إيقاف التسجيل',
     next: 'التالي',
     go_back: 'العودة للوحة التحكم',
-    play_audio: 'استمع للجملة',
+    play_audio: 'استمع للمرسوم',
     playing_audio: 'جاري التشغيل...',
     your_turn: 'حان دورك الآن!',
     record_prompt: 'يمكنك تسجيل صوتك ومقارنته.',
@@ -54,9 +54,9 @@ const lang: Record<string, Record<string, string>> = {
     mic_unsupported_desc: 'خاصية تسجيل الصوت غير مدعومة في هذا المتصفح.',
   },
   en: {
-    title: 'The Royal Pronunciation Challenge',
-    mentor: 'Disciple of the Nile Challenge - Opening Phrase',
-    instructions: 'Listen to the sentence and repeat it clearly.',
+    title: "Hatshepsut's Pharaoh's Might Challenges",
+    mentor: "Listen to the royal decree, then declare your loyalty by repeating it.",
+    instructions: 'Listen to the sentence and repeat it clearly to activate your pharaonic power.',
     loading: "Preparing mentor's voice...",
     error: 'An error occurred: Cannot play audio.',
     record: 'Record Voice',
@@ -64,7 +64,7 @@ const lang: Record<string, Record<string, string>> = {
     stop_recording: 'Stop Recording',
     next: 'Next',
     go_back: 'Back to Dashboard',
-    play_audio: 'Listen to Sentence',
+    play_audio: 'Listen to Decree',
     playing_audio: 'Playing...',
     your_turn: "It's your turn now!",
     record_prompt: 'You can record your voice and compare.',
@@ -210,8 +210,14 @@ export default function PronunciationChallengePage() {
 
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-nile-dark p-4">
-       <div className="fixed top-4 left-4 z-10 flex items-center gap-4">
+      <div className="relative flex items-center justify-center min-h-screen bg-nile-dark p-4 overflow-hidden">
+        <div 
+            className="absolute inset-0 bg-cover bg-center z-0 opacity-20"
+            style={{backgroundImage: "url('https://picsum.photos/seed/hatshepsut-challenge/1200/800')", filter: 'blur(4px)'}}
+            data-ai-hint="pharaoh temple"
+        ></div>
+
+       <div className="fixed top-4 left-4 z-20 flex items-center gap-4">
         <Select onValueChange={handleLanguageChange} defaultValue={currentLang}>
           <SelectTrigger className="w-[180px] bg-gold-accent text-dark-granite border-none royal-title font-bold shadow-lg">
             <SelectValue placeholder="Language" />
@@ -227,9 +233,9 @@ export default function PronunciationChallengePage() {
         </Link>
       </div>
 
-      <div className="w-full max-w-2xl p-6 bg-white rounded-2xl shadow-2xl dashboard-card text-white">
+      <div className="relative z-10 w-full max-w-3xl p-6 bg-nile-dark/80 backdrop-blur-sm rounded-2xl shadow-2xl dashboard-card text-white border-2 border-gold-accent">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-extrabold text-dark-granite mb-2">
+          <h1 className="text-4xl font-extrabold text-dark-granite mb-2">
             <span className="royal-title text-gold-accent">{texts.title}</span>
           </h1>
           <p className="text-lg text-sand-ochre">{texts.mentor}</p>
@@ -310,5 +316,3 @@ export default function PronunciationChallengePage() {
     </div>
   );
 }
-
-    
