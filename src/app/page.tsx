@@ -155,6 +155,10 @@ export default function HomePage() {
                     <i className="fas fa-map-signs text-2xl ml-3"></i>
                     <span>ابدأ من هنا: مسار التعلم الملكي</span>
                 </Link>
+                <Link href="#" className="col-span-full utility-button px-6 py-4 text-2xl font-black rounded-full flex items-center justify-center border-blue-400 text-blue-400 hover:bg-blue-900/50">
+                    <i className="fas fa-gem text-2xl ml-3"></i>
+                    <span>الديوان الخليجي (قريباً)</span>
+                </Link>
                 <Link href="/admin" className="utility-button px-6 py-3 text-lg font-bold rounded-full flex items-center justify-center border-red-400 text-red-400">
                     <i className="fas fa-crown text-xl ml-3"></i>
                     <span>ديوان الإدارة</span>
@@ -317,5 +321,3 @@ export default function HomePage() {
     </div>
   );
 }
-
-    
