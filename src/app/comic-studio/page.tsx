@@ -51,7 +51,7 @@ const StatusDisplay = ({
   };
 
   return (
-    <div className={`flex items-center space-x-2 ${TEXT_COLORS[type]}`}>
+    <div className={`flex items-center space-x-2 space-x-reverse ${TEXT_COLORS[type]}`}>
       {ICONS[type]}
       <span className="font-medium">{message}</span>
     </div>
