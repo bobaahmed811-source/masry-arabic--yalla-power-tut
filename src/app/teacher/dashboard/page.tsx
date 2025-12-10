@@ -32,13 +32,20 @@ const MOCK_REVIEWS = [
   { id: 3, student: 'حتحور الصغيرة', rating: 5, comment: 'ابنتي تتحدث الآن عن التجارة مع بلاد بونت! شكراً للملكة.', date: '2025-11-15' },
 ];
 
+const MOCK_COURSES = [
+    { id: 1, title: 'أساسيات العمارة الملكية', description: 'دورة شاملة عن مبادئ تصميم المعابد والقصور.' },
+    { id: 2, title: 'فن التجارة مع بلاد بونت', description: 'كيفية إدارة البعثات التجارية وتحقيق الأرباح.' },
+];
+
 
 export default function TeacherDashboardPage() {
   const [profile, setProfile] = useState(TEACHER_PROFILE_INITIAL);
   const [lessons, setLessons] = useState(UPCOMING_LESSONS);
   const [availability, setAvailability] = useState(MOCK_AVAILABILITY);
   const [reviews, setReviews] = useState(MOCK_REVIEWS);
+  const [courses, setCourses] = useState(MOCK_COURSES);
   const [newSlot, setNewSlot] = useState({ date: '', time: '' });
+  const [newCourse, setNewCourse] = useState({ title: '', description: '', url: '' });
   const [feedback, setFeedback] = useState({ message: '', type: '' });
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [editData, setEditData] = useState({ description: profile.description, pricePerHour: profile.pricePerHour });
@@ -112,6 +119,24 @@ export default function TeacherDashboardPage() {
       setFeedback({ message: 'تم تحديث الملف الشخصي بنجاح!', type: 'success' });
       setTimeout(() => setFeedback({ message: '', type: '' }), 3000);
   }, [editData]);
+
+  const addCourse = useCallback(() => {
+    if (!newCourse.title || !newCourse.description || !newCourse.url) {
+        setFeedback({ message: 'الرجاء ملء جميع حقول الدورة.', type: 'error' });
+        return;
+    }
+    const courseToAdd = {
+        id: Date.now(),
+        title: newCourse.title,
+        description: newCourse.description,
+        // In a real app, this might be a video upload response URL
+        url: newCourse.url, 
+    };
+    setCourses(prev => [...prev, courseToAdd]);
+    setNewCourse({ title: '', description: '', url: '' });
+    setFeedback({ message: 'تمت إضافة الدورة بنجاح!', type: 'success' });
+    setTimeout(() => setFeedback({ message: '', type: '' }), 3000);
+  }, [newCourse]);
 
 
   const LessonCard = ({ lesson }: { lesson: any }) => (
@@ -290,6 +315,45 @@ export default function TeacherDashboardPage() {
           </div>
 
           <div className="lg:col-span-2 space-y-8">
+            <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                <h2 className="text-2xl font-extrabold text-[#0d284e] mb-4 border-b pb-2">إدارة الدورات والمواد التعليمية 📚</h2>
+                <div className="space-y-3 mb-6 p-4 border border-gray-300 rounded-lg bg-gray-50">
+                    <h3 className="text-lg font-bold text-[#17365e]">إضافة دورة جديدة</h3>
+                     <input
+                        type="text"
+                        placeholder="عنوان الدورة"
+                        value={newCourse.title}
+                        onChange={(e) => setNewCourse(prev => ({ ...prev, title: e.target.value }))}
+                        className="w-full p-2 border rounded-lg focus:ring-[#FFD700] focus:border-[#FFD700]"
+                    />
+                    <textarea
+                        placeholder="وصف موجز للدورة"
+                        value={newCourse.description}
+                        onChange={(e) => setNewCourse(prev => ({ ...prev, description: e.target.value }))}
+                        className="w-full p-2 border rounded-lg focus:ring-[#FFD700] focus:border-[#FFD700] h-20"
+                    />
+                     <input
+                        type="url"
+                        placeholder="رابط المادة التعليمية (فيديو، ملف، ...)"
+                        value={newCourse.url}
+                        onChange={(e) => setNewCourse(prev => ({ ...prev, url: e.target.value }))}
+                        className="w-full p-2 border rounded-lg focus:ring-[#FFD700] focus:border-[#FFD700]"
+                    />
+                    <button onClick={addCourse} className="w-full py-2 bg-blue-600 text-white font-bold rounded-lg shadow-md hover:bg-blue-700 transition-colors">
+                        <i className="fas fa-plus ml-2"></i> إضافة الدورة
+                    </button>
+                </div>
+                <h3 className="text-lg font-bold text-[#0d284e] mb-3">الدورات الحالية:</h3>
+                <div className="space-y-2">
+                    {courses.map(course => (
+                        <div key={course.id} className="bg-gray-50 p-3 rounded-lg border-l-4 border-blue-500">
+                            <p className="font-bold text-gray-800">{course.title}</p>
+                            <p className="text-sm text-gray-600">{course.description}</p>
+                        </div>
+                    ))}
+                    {courses.length === 0 && <p className="text-gray-500 text-center text-sm">لا توجد دورات مضافة بعد.</p>}
+                </div>
+            </div>
             
             <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
                 <h2 className="text-2xl font-extrabold text-[#0d284e] mb-4 border-b pb-2">قاعة الملكة حتشبسوت: القوة الفرعونية 🌟</h2>
