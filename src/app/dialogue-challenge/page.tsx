@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
@@ -6,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { User, Store, Crown, Medal, Skull, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { getDialogueEvaluation } from './actions';
 
 
 // === Story Data ===
@@ -54,43 +56,37 @@ const storyScenario = [
 ];
 
 const mockEvaluateDialogue = async (input: { userAnswer: string, choiceType: 'correct' | 'wrong' | 'good' | 'excellent' }) => {
-  let score = 0;
-  let feedback = '';
-  let nextId = 0;
+    let score = 0;
+    let feedback = '';
+    let isPositive = false;
 
-  switch (input.choiceType) {
-    case 'excellent':
-      score = 75;
-      feedback =
-        "أحسنت! الإجابة كانت كاملة ومهذبة جداً باستخدام 'شكراً جزيلاً'. لقد استخدمت لغة السوق اليومية بطلاقة. حصلت على مكافأة جودة التعبير!";
-      nextId = 5;
-      break;
-    case 'good':
-      score = 50;
-      feedback =
-        "إجابة صحيحة ومفهومة. لكن تذّكر أن استخدام كلمة 'شكراً' و 'اتفضل' يزيد من طلاقتك الاجتماعية في مصر. حصلت على نقاط الإجابة الصحيحة.";
-      nextId = 5;
-      break;
-    case 'correct':
-      score = 50;
-      feedback =
-        "إجابة صحيحة. لقد طلبت ما تريده بوضوح ولباقة باستخدام 'لو سمحت'.";
-      nextId = 3;
-      break;
-    case 'wrong':
-      score = -20;
-      feedback =
-        'توقفي! هذا السؤال غير مناسب في سياق شراء الطماطم. راجعِ مفردات الحوار في المتجر.';
-      nextId = 2; // Return to the same question
-      break;
-    default:
-      score = 0;
-      feedback = 'حدث خطأ في تقييم الإجابة.';
-      nextId = 2;
+    switch (input.choiceType) {
+        case 'excellent':
+        score = 75;
+        feedback = "أحسنت! الإجابة كانت كاملة ومهذبة جداً باستخدام 'شكراً جزيلاً'. لقد استخدمت لغة السوق اليومية بطلاقة. حصلت على مكافأة جودة التعبير!";
+        isPositive = true;
+        break;
+        case 'good':
+        score = 50;
+        feedback = "إجابة صحيحة ومفهومة. لكن تذّكر أن استخدام كلمة 'شكراً' و 'اتفضل' يزيد من طلاقتك الاجتماعية في مصر. حصلت على نقاط الإجابة الصحيحة.";
+        isPositive = true;
+        break;
+        case 'correct':
+        score = 50;
+        feedback = "إجابة صحيحة. لقد طلبت ما تريده بوضوح ولباقة باستخدام 'لو سمحت'.";
+        isPositive = true;
+        break;
+        case 'wrong':
+        score = -20;
+        feedback = 'توقفي! هذا السؤال غير مناسب في سياق شراء الطماطم. راجعِ مفردات الحوار في المتجر.';
+        isPositive = false;
+        break;
+        default:
+        score = 0;
+        feedback = 'حدث خطأ في تقييم الإجابة.';
+        isPositive = false;
   }
-
-  // Simulate the fact that the Genkit feature is disabled
-  return { error: "Failed to get evaluation from the AI. This feature is temporarily disabled." };
+  return { success: { score, feedback, isPositive } };
 }
 
 
@@ -176,36 +172,56 @@ export default function DialogueChallengePage() {
   const handleUserChoice = useCallback(async (choice: any) => {
     if (isEvaluating || isChallengeComplete) return;
   
-    // 1. Add user's choice bubble to dialogue
     const userText = choice.text.substring(choice.text.indexOf(':') + 2);
     const userDialogueStep = { ...storyScenario.find(s => s.id === currentStepId), text: userText };
     setDialogue(prev => [...prev, userDialogueStep]);
   
-    // 2. Start evaluation
     setIsEvaluating(true);
     setFeedback(null);
   
-    // 3. Get evaluation from mock function
+    // Use the mock evaluation function directly since Genkit is disabled
     const result = await mockEvaluateDialogue({ userAnswer: userText, choiceType: choice.type });
   
     setIsEvaluating(false);
-    toast({
-        variant: 'destructive',
-        title: 'الميزة معطلة',
-        description: 'ميزة تقييم الحوار بالذكاء الاصطناعي معطلة مؤقتاً.',
-    });
-    // Immediately show the next step without AI feedback logic
-     setTimeout(() => {
-        const nextStep = storyScenario.find(s => s.id === choice.nextId);
-        if (nextStep) {
-             setDialogue(prev => [...prev, nextStep]);
-             setCurrentStepId(choice.nextId);
+
+    if (result.success) {
+      const { score, feedback: feedbackMessage, isPositive } = result.success;
+      setNilePoints(prev => prev + score);
+      setFeedback({ message: feedbackMessage, score, isPositive });
+      
+      // Proceed after showing feedback
+      setTimeout(() => {
+        setFeedback(null);
+        if (choice.type === 'wrong') {
+            // Stay on the same step for wrong answers
+            setDialogue(prev => prev.slice(0, -1)); // Remove the wrong user choice bubble
         } else {
-             setIsChallengeComplete(true);
+            const nextStep = storyScenario.find(s => s.id === choice.nextId);
+            if (nextStep) {
+                setDialogue(prev => [...prev, nextStep]);
+                setCurrentStepId(choice.nextId);
+            } else {
+                setIsChallengeComplete(true);
+            }
         }
-     }, 1000);
-
-
+      }, 3000); // Wait 3 seconds to let user read feedback
+    } else {
+        // Fallback in case mock function fails or for future real implementation
+        toast({
+            variant: 'destructive',
+            title: 'الميزة معطلة',
+            description: 'ميزة تقييم الحوار بالذكاء الاصطناعي معطلة مؤقتاً.',
+        });
+        setTimeout(() => {
+            const nextStep = storyScenario.find(s => s.id === choice.nextId);
+            if (nextStep) {
+                 setDialogue(prev => [...prev, nextStep]);
+                 setCurrentStepId(choice.nextId);
+            } else {
+                 setIsChallengeComplete(true);
+            }
+         }, 1000);
+    }
   }, [alias, currentStepId, isEvaluating, isChallengeComplete, toast]);
   
   
@@ -271,7 +287,7 @@ export default function DialogueChallengePage() {
           </div>
 
           <div className="mt-4 pt-4 border-t-2 border-sand-ochre/30">
-            {currentOptions && !isEvaluating && !isChallengeComplete && (
+            {currentOptions && !isEvaluating && !isChallengeComplete && !feedback && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {currentOptions.map((choice:any, index:number) => (
                   <Button key={index} onClick={() => handleUserChoice(choice)} className="w-full text-right justify-start px-4 py-6 text-base bg-nile text-sand-ochre font-bold rounded-lg shadow-md hover:bg-sand-ochre/20 hover:text-white transition-colors disabled:opacity-50 border border-sand-ochre/50" disabled={isEvaluating}>
