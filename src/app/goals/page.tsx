@@ -25,7 +25,7 @@ export default function GoalsPage() {
 
   return (
     <div className="antialiased flex items-center justify-center min-h-screen bg-[#f0f4f8]">
-      <div className="max-w-4xl mx-auto p-6 bg-white rounded-2xl shadow-2xl border-t-8 border-nile">
+      <div className="max-w-4xl mx-auto p-6 bg-white rounded-2xl shadow-2xl border-t-8 border-nile-blue">
         <div className="text-center mb-10">
           <h1 className="text-4xl font-extrabold text-dark-granite mb-2">
             مرحباً بك في <span className="royal-title text-nile-blue">Yalla Masry</span>!
@@ -170,20 +170,29 @@ const GoalCard = ({
       )}
       onClick={() => onSelect(goal)}
     >
-      {icon === 'ankh' ? (
-        <svg
-          className="pharaonic-icon-ankh icon-royal mx-auto"
-          style={{ color: iconColor }}
-          viewBox="0 0 24 24"
-        >
-          <path d="M12 2v6m-4 4h8m-4 0v10m-2 0h4m-4 0c0 1.104.896 2 2 2s2-.896 2-2h-4z" />
-          <circle cx="12" cy="8" r="4" />
-        </svg>
-      ) : (
-        <i className={cn(icon, 'icon-royal')} style={{ color: iconColor }}></i>
-      )}
-      <h3 className="text-2xl font-bold mb-2 text-dark-granite">{title}</h3>
-      <p className="text-gray-600">{description}</p>
+      <div className="text-center">
+        {icon === 'ankh' ? (
+          <svg
+            className="pharaonic-icon-ankh icon-royal mx-auto mb-3"
+            style={{ color: iconColor }}
+            viewBox="0 0 24 24"
+            width="48"
+            height="48"
+            stroke="currentColor"
+            strokeWidth="2"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M12 2v6m-4 4h8m-4 0v10m-2 0h4m-4 0c0 1.104.896 2 2 2s2-.896 2-2h-4z" />
+            <circle cx="12" cy="8" r="4" />
+          </svg>
+        ) : (
+          <i className={cn(icon, 'icon-royal text-5xl mb-3')} style={{ color: iconColor }}></i>
+        )}
+        <h3 className="text-xl font-bold mb-2 text-dark-granite">{title}</h3>
+        <p className="text-gray-600">{description}</p>
+      </div>
     </div>
   );
 };

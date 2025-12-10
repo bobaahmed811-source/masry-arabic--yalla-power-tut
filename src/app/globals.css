@@ -370,41 +370,20 @@ body { font-family: 'El Messiri', sans-serif; background-color: #0d284e; }
 /* Goal Page Styles */
 .goal-card {
     background-color: white;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
     transition: transform 0.3s, border-color 0.3s;
-    border: 3px solid transparent;
+    border-width: 2px;
+    border-color: transparent;
     cursor: pointer;
     height: 100%;
 }
 
-.goal-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--gold-accent);
-}
-
-.selected-card {
+.goal-card.selected-card {
     border-color: var(--nile-blue);
     background-color: #e6f0ff;
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-}
-
-.icon-royal {
-    font-size: 3rem;
-    color: var(--nile-blue);
-    margin-bottom: 12px;
-}
-
-.pharaonic-icon-ankh {
-    width: 48px;
-    height: 48px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    display: inline-block;
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 }
 
 .pharaoh-mentor-icon {
