@@ -1,4 +1,3 @@
-
 'use client';
 import {
   Auth,
@@ -67,10 +66,18 @@ export function updateProfileNonBlocking(user: User, profileData: { displayName?
     .catch(error => {
         console.error("Error updating profile:", error);
         if (callback) {
-            callback({ success: false, error: error });
+            callback({ success: false, error: error, user });
         }
     });
 }
 
 /** Initiate sign-out (non-blocking). */
-export function initiateSignOut(authInstance: Auth, callback?: () => void): void
+export function initiateSignOut(authInstance: Auth, callback?: () => void): void {
+    signOut(authInstance)
+    .then(() => {
+        if (callback) callback();
+    })
+    .catch(error => {
+        console.error("Sign out error:", error);
+    });
+}
