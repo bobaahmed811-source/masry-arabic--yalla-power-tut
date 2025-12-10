@@ -1,9 +1,10 @@
+
 'use client';
 
 import React, { useEffect, useRef, useCallback, useState } from 'react';
 import * as THREE from 'three';
 import { ARTIFACT_DATA, type Artifacts } from '@/lib/artifacts';
-import { getSpeechAudio } from './actions';
+import { useToast } from '@/hooks/use-toast';
 
 
 export default function MuseumPage() {
@@ -14,6 +15,7 @@ export default function MuseumPage() {
     const blockerRef = useRef<HTMLDivElement>(null);
     const joystickRef = useRef<HTMLDivElement>(null);
     const joystickHandleRef = useRef<HTMLDivElement>(null);
+    const { toast } = useToast();
 
     // Use useState for artifact data to make it reactive
     const [artifacts, setArtifacts] = useState<Artifacts>(ARTIFACT_DATA);
@@ -458,30 +460,11 @@ export default function MuseumPage() {
     };
     
     const speakArtifactDescription = async () => {
-        if (!state.currentArtifactName) return;
-
-        const speakButton = document.getElementById('speak-description');
-        if (!speakButton || (speakButton as HTMLButtonElement).disabled) return;
-
-        (speakButton as HTMLButtonElement).disabled = true;
-        speakButton.innerHTML = `<span class="spinner"></span> ...جاري التحميل`;
-        alertMessage('جاري تحويل النص إلى كلام...', 'info');
-        
-        const artifact = artifacts[state.currentArtifactName];
-        const textToSpeak = `التحفة: ${artifact.title}. الوصف: ${artifact.description}`;
-
-        const result = await getSpeechAudio({ text: textToSpeak });
-
-        if ('success' in result && result.success) {
-            const audio = new Audio(result.success as string);
-            audio.play().catch(e => console.error("Audio play failed", e));
-            alertMessage('تم تشغيل وصف التحفة بنجاح.', 'success');
-        } else {
-            alertMessage((result as { error: string }).error || 'فشل في توليد الصوت.', 'error');
-        }
-        
-        (speakButton as HTMLButtonElement).disabled = false;
-        speakButton.innerHTML = `<i class="fas fa-volume-up ml-2"></i> استمع للوصف`;
+        toast({
+            variant: 'destructive',
+            title: '❌ الميزة معطلة',
+            description: 'ميزة تحويل النص إلى كلام معطلة مؤقتاً.',
+        });
     };
 
     const updateReportContent = useCallback(() => {
@@ -545,8 +528,8 @@ export default function MuseumPage() {
                     <p id="puzzle-text" className="text-sm"></p>
                 </div>
                 <div className="flex flex-col space-y-3 mt-4">
-                    <button id="speak-description" onClick={speakArtifactDescription} className="info-button bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors shadow-md disabled:opacity-50 disabled:cursor-wait">
-                        <i className="fas fa-volume-up ml-2"></i> استمع للوصف
+                    <button id="speak-description" onClick={speakArtifactDescription} className="info-button bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                        <i className="fas fa-volume-up ml-2"></i> استمع للوصف (معطل)
                     </button>
                     <button id="toggle-puzzle" onClick={handleTogglePuzzle} className="info-button bg-yellow-600 text-black font-bold rounded-lg hover:bg-yellow-500 transition-colors shadow-md">
                         <i className="fas fa-brain ml-2"></i> لغز اليوم
@@ -617,3 +600,5 @@ export default function MuseumPage() {
         </div>
     );
 }
+
+    
