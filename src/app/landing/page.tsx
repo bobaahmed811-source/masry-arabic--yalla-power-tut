@@ -52,7 +52,7 @@ export default function LandingPage() {
             يلا مصري
           </h1>
           <p className="text-2xl md:text-3xl text-sand-ochre mb-8">
-            أكاديمية اللهجة المصرية للسيدات والأطفال
+            بيئة آمنة وممتعة للنساء والأطفال لإتقان اللهجة المصرية
           </p>
           <div className="aspect-w-16 aspect-h-9 max-w-2xl mx-auto rounded-lg overflow-hidden shadow-2xl mb-8 border-4 border-gold-accent">
             <iframe
