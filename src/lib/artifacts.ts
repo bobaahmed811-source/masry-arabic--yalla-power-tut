@@ -73,7 +73,7 @@ export const ARTIFACT_DATA: Artifacts = {
     'tut_dagger': {
         title: 'خنجر توت النيزكي',
         description: 'خنجر استثنائي مصنوع بالكامل من حديد نيزكي (جاء من الفضاء).',
-        puzzle: 'لغز: ما هي الميزة غير العادية التي جعلت هذا الخنجر فريداً؟',
+        puzzle: 'لغ-ز: ما هي الميزة غير العادية التي جعلت هذا الخنجر فريداً؟',
         position: new THREE.Vector3(-50, 0, -50),
         icon: 'fas fa-meteor',
         goal: false,
