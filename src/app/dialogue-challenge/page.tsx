@@ -4,6 +4,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { getDialogueEvaluation } from './actions';
 import { useUser } from '@/firebase';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 // === Story Data ===
 const storyScenario = [
@@ -95,7 +97,7 @@ const DialogueBubble = ({ speaker, text, isUser, isEvaluating }: { speaker: stri
 // === Main Component ===
 
 export default function DialogueChallengePage() {
-  const { user } = useUser();
+  const { user, isUserLoading } = useUser();
   const [alias, setAlias] = useState("تحتمس القوي"); // Default alias
   const [nilePoints, setNilePoints] = useState(1200);
 
@@ -172,6 +174,29 @@ export default function DialogueChallengePage() {
     }
   }, [alias, currentStepId, isEvaluating, isChallengeComplete]);
   
+  if (isUserLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-[#0d284e]">
+        <p className="text-white text-xl">جاري التحقق من هوية الفرعون...</p>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-nile-dark text-white p-4 text-center">
+        <i className="fas fa-lock text-5xl text-gold-accent mb-6"></i>
+        <h1 className="text-3xl font-bold royal-title mb-4">محتوى ملكي محمي</h1>
+        <p className="text-sand-ochre mb-8 max-w-md">
+          عفواً أيها الزائر، هذه القاعة مخصصة فقط لأفراد المملكة المسجلين. يرجى تسجيل الدخول للوصول إلى هذا التحدي.
+        </p>
+        <Link href="/login">
+            <Button className="cta-button text-lg px-8">تسجيل الدخول إلى المملكة</Button>
+        </Link>
+      </div>
+    );
+  }
+
   const currentDialogueItem = dialogue.find(d => d.id === currentStepId);
   const currentOptions = currentDialogueItem?.options;
 
