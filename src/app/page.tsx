@@ -1,3 +1,4 @@
+
 'use client';
 
 import React from 'react';
@@ -21,6 +22,18 @@ import {
   LogOut,
   MessageCircleQuestion,
   GraduationCap,
+  Mic,
+  Smile,
+  Palette,
+  Shuffle,
+  Map,
+  Volume2,
+  Users,
+  CalendarCheck,
+  Store,
+  Landmark,
+  BookMarked,
+  ShieldQuestion,
 } from 'lucide-react';
 import { initiateSignOut } from '@/firebase/non-blocking-login';
 import { useToast } from '@/hooks/use-toast';
@@ -63,7 +76,7 @@ const ChallengeLink = ({
     className="challenge-item group block p-4 rounded-lg transition-all duration-300"
   >
     <div className="flex items-center gap-4">
-      <div className="icon-symbol text-3xl">{icon}</div>
+      <div className="icon-symbol text-3xl text-gold-accent w-8 flex justify-center">{icon}</div>
       <div>
         <h3 className="font-bold text-white group-hover:text-gold-accent transition-colors">
           {title}
@@ -171,25 +184,25 @@ export default function HomePage() {
                       href="/pronunciation-challenge"
                       title="قوة حتشبسوت"
                       description="تحدي النطق والتكرار."
-                      icon={<i className="fas fa-microphone-alt"></i>}
+                      icon={<Mic />}
                     />
                     <ChallengeLink
                       href="/dialogue-challenge"
                       title="حوارات السوق"
                       description="تحدي محاكاة المواقف اليومية."
-                      icon={<i className="fas fa-comments"></i>}
+                      icon={<Smile />}
                     />
                      <ChallengeLink
                       href="/comic-studio"
                       title="استوديو القصص المصورة"
                       description="اصنعي قصصاً بصوتكِ."
-                      icon={<i className="fas fa-paint-brush"></i>}
+                      icon={<Palette />}
                     />
                     <ChallengeLink
                       href="/word-scramble"
                       title="ألغاز الكلمات"
                       description="أعيدي ترتيب الكلمات لتكوين جمل صحيحة."
-                      icon={<i className="fas fa-random"></i>}
+                      icon={<Shuffle />}
                     />
                   </CardContent>
                 </Card>
@@ -208,13 +221,13 @@ export default function HomePage() {
                       href="/learning-path"
                       title="مسار التعلم الملكي"
                       description="تابعي تقدمكِ في المنهج الدراسي."
-                      icon={<i className="fas fa-map-signs"></i>}
+                      icon={<Map />}
                     />
                     <ChallengeLink
                       href="/audio-library"
                       title="خزانة الأصوات"
                       description="استمعي للنطق الصحيح للعبارات."
-                      icon={<i className="fas fa-volume-up"></i>}
+                      icon={<Volume2 />}
                     />
                      <ChallengeLink
                       href="/tutor"
@@ -245,31 +258,37 @@ export default function HomePage() {
                       href="/instructors"
                       title="معلمات المملكة"
                       description="تصفحي ملفات المعلمات."
-                      icon={<i className="fas fa-chalkboard-teacher"></i>}
+                      icon={<Users />}
                     />
                      <ChallengeLink
                       href="/booking"
                       title="حجز الدروس"
                       description="احجزي موعدكِ القادم."
-                      icon={<i className="fas fa-calendar-check"></i>}
+                      icon={<CalendarCheck />}
                     />
                      <ChallengeLink
                       href="/store"
                       title="متجر الكنوز"
                       description="منتجات رقمية وهدايا."
-                      icon={<i className="fas fa-store"></i>}
+                      icon={<Store />}
                     />
                      <ChallengeLink
                       href="/museum"
                       title="المتحف الافتراضي"
                       description="تجربة تفاعلية ثلاثية الأبعاد."
-                      icon={<i className="fas fa-landmark"></i>}
+                      icon={<Landmark />}
                     />
                      <ChallengeLink
                       href="/quran"
                       title="واحة القرآن"
                       description="قسم خاص بالعلوم الشرعية."
-                      icon={<i className="fas fa-quran"></i>}
+                      icon={<BookMarked />}
+                    />
+                     <ChallengeLink
+                      href="/landing"
+                      title="عن الأكاديمية"
+                      description="تعرفي على قصتنا ورسالتنا."
+                      icon={<ShieldQuestion />}
                     />
                   </CardContent>
                 </Card>
