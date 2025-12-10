@@ -49,6 +49,7 @@ export default function SignupPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSignup = (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,6 +61,7 @@ export default function SignupPage() {
         });
         return;
     }
+    setIsSubmitting(true);
 
     initiateEmailSignUp(auth, email, password, (result) => {
         if (result.success && result.user) {
@@ -79,6 +81,7 @@ export default function SignupPage() {
                     });
                     router.push('/'); // Redirect even if name update fails
                 }
+                setIsSubmitting(false);
             });
         } else if (result.error) {
             let description = "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.";
@@ -98,6 +101,7 @@ export default function SignupPage() {
                 title: "فشل إنشاء الحساب",
                 description: description,
             });
+            setIsSubmitting(false);
         }
     });
   };
@@ -124,6 +128,7 @@ export default function SignupPage() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="bg-nile-dark border-sand-ochre text-white placeholder:text-sand-ochre/50 focus:ring-gold-accent"
+                  disabled={isSubmitting}
                 />
               </div>
               <div className="grid gap-2">
@@ -136,6 +141,7 @@ export default function SignupPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="bg-nile-dark border-sand-ochre text-white placeholder:text-sand-ochre/50 focus:ring-gold-accent"
+                  disabled={isSubmitting}
                 />
               </div>
               <div className="grid gap-2">
@@ -147,10 +153,11 @@ export default function SignupPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="bg-nile-dark border-sand-ochre text-white focus:ring-gold-accent"
+                  disabled={isSubmitting}
                 />
               </div>
-              <Button type="submit" className="w-full cta-button">
-                إنشاء حساب ملكي
+              <Button type="submit" className="w-full cta-button" disabled={isSubmitting}>
+                {isSubmitting ? 'جاري الإنشاء...' : 'إنشاء حساب ملكي'}
               </Button>
               <Button variant="outline" className="w-full utility-button" disabled>
                 التسجيل بواسطة Google (قريباً)

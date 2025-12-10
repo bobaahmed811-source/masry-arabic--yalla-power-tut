@@ -17,7 +17,7 @@ export default function HomePage() {
         <div className="space-y-4">
           <Link href="/landing" className="block">
             <span className="utility-button px-8 py-3 text-lg font-bold rounded-full inline-block">
-              اكتشف الأكاديمية
+              اكتشف الأكاديمية (صفحة الهبوط)
             </span>
           </Link>
           <Link href="/login" className="block">

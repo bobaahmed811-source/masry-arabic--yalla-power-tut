@@ -1,9 +1,6 @@
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
-  // Generate a static export of the app
-  output: 'export',
-  
   /* config options here */
   typescript: {
     ignoreBuildErrors: true,
@@ -12,7 +9,7 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
-    unoptimized: true, // Required for static export with next/image
+    unoptimized: true, 
     remotePatterns: [
       {
         protocol: 'https',
@@ -27,7 +24,7 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
       {
-        protocol: 'https',
+        protocol: 'https' ,
         hostname: 'picsum.photos',
         port: '',
         pathname: '/**',
