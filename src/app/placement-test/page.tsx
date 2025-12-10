@@ -200,16 +200,16 @@ export default function PlacementTestPage() {
                     </h1>
                     <p id="mentor-text" className="text-lg text-sand-ochre flex items-center justify-center">
                         <span>{texts.mentor}</span>
-                        <svg className="pharaoh-mentor-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <svg className="pharaoh-mentor-icon w-12 h-12 inline-block mx-2" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                            <circle cx="50" cy="40" r="30" fill="#fadc99"/>
-                            <path d="M 20 25 Q 50 10 80 25 L 80 40 Q 50 60 20 40 Z" fill="#316889"/>
+                            <path d="M 20 25 Q 50 10 80 25 L 80 40 Q 50 60 20 40 Z" fill="#0b4e8d"/>
                             <path d="M 20 25 Q 50 10 80 25 L 80 40 Q 50 60 20 40 Z" fill="none" stroke="#FFD700" strokeWidth="3"/>
                             <line x1="25" y1="30" x2="75" y2="30" stroke="#FFD700" strokeWidth="3"/>
                             <line x1="25" y1="40" x2="75" y2="40" stroke="#FFD700" strokeWidth="3"/>
-                            <path d="M 40 70 C 40 85, 60 85, 60 70 L 55 60 L 45 60 Z" fill="#316889" stroke="#FFD700" strokeWidth="2"/>
-                            <circle cx="40" cy="40" r="4" fill="#316889"/>
-                            <circle cx="60" cy="40" r="4" fill="#316889"/>
-                            <path d="M 45 55 Q 50 58 55 55" stroke="#316889" strokeWidth="2" fill="none"/>
+                            <path d="M 40 70 C 40 85, 60 85, 60 70 L 55 60 L 45 60 Z" fill="#0b4e8d" stroke="#FFD700" strokeWidth="2"/>
+                            <circle cx="40" cy="40" r="4" fill="#0b4e8d"/>
+                            <circle cx="60" cy="40" r="4" fill="#0b4e8d"/>
+                            <path d="M 45 55 Q 50 58 55 55" stroke="#0b4e8d" strokeWidth="2" fill="none"/>
                         </svg>
                     </p>
                 </div>
@@ -270,6 +270,3 @@ export default function PlacementTestPage() {
         </div>
     );
 }
-
-
-    
