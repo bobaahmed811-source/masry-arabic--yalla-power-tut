@@ -65,10 +65,12 @@ body { font-family: 'El Messiri', sans-serif; background-color: #0d284e; }
     --gold-accent: #FFD700;
     --sand-ochre: #d6b876;
     --dark-granite: #2a2a2a;
+    --nile-dark: #0d284e;
 }
 
 .royal-title { font-family: 'Cairo', sans-serif; font-weight: 900; color: var(--gold-accent); }
 .bg-nile-dark { background-color: #0d284e; }
+.bg-nile { background-color: var(--nile-blue); }
 
 .dashboard-card {
     background: linear-gradient(145deg, #1c3d6d, #0d284e);
@@ -107,7 +109,7 @@ body { font-family: 'El Messiri', sans-serif; background-color: #0d284e; }
     font-weight: 900;
     transition: background-color 0.3s, transform 0.3s;
 }
-.cta-button:hover {
+.cta-button:hover:not(:disabled) {
     background-color: #e5b800;
     transform: translateY(-2px);
 }
@@ -115,6 +117,7 @@ body { font-family: 'El Messiri', sans-serif; background-color: #0d284e; }
     background-color: #7a7a7a;
     cursor: not-allowed;
     transform: none;
+    opacity: 0.5;
 }
 
 
@@ -414,4 +417,13 @@ body { font-family: 'El Messiri', sans-serif; background-color: #0d284e; }
     border-radius: 1rem;
     padding: 0.75rem;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Pronunciation Challenge Styles */
+.challenge-card {
+    background-color: white;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    text-align: center;
 }
