@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -79,7 +80,7 @@ const AdminDashboardPage = () => {
             toast({ title: 'تم التحديث', description: 'تم تحديث بيانات المعلمة بنجاح.' });
         } else {
             // Adding a new instructor
-            await addDocumentNonBlocking(instructorsCollection, instructorData);
+            addDocumentNonBlocking(instructorsCollection, instructorData);
             toast({ title: 'تمت الإضافة', description: 'تم إضافة معلمة جديدة بنجاح.' });
         }
         setIsDialogOpen(false);
@@ -224,3 +225,5 @@ const AdminDashboardPage = () => {
 };
 
 export default AdminDashboardPage;
+
+    
