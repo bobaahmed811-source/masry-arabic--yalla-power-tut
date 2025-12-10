@@ -6,6 +6,7 @@ import { addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { collection } from 'firebase/firestore';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Gift, PiggyBank, ShoppingCart } from 'lucide-react';
+import Link from 'next/link';
 
 // Define the structure for a payment message
 type PaymentMessage = {
@@ -96,15 +97,21 @@ export default function StorePage() {
   };
 
   return (
-    <div className="store-body antialiased">
+    <div className="store-body antialiased bg-gray-50 min-h-screen">
       <header className="bg-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center" style={{ direction: 'rtl' }}>
-          <a href="/store" className="text-3xl font-bold text-[#0b4e8d]">كنوز النيل</a>
-          <div className="text-sm text-gray-600">متجر برديات العامية والهدايا</div>
+          <Link href="/store" className="text-3xl font-bold text-[#0b4e8d] royal-title">كنوز النيل</Link>
+          <div className="flex items-center space-x-4">
+            <span className="text-sm text-gray-600 font-semibold">متجر برديات العامية والهدايا</span>
+            <Link href="/" className="utility-button px-4 py-2 text-sm font-bold rounded-lg flex items-center justify-center">
+                <i className="fas fa-arrow-left ml-2"></i>
+                <span>العودة للوحة التحكم</span>
+            </Link>
+          </div>
         </div>
       </header>
 
-      <main className="py-16">
+      <main className="py-12 md:py-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8" style={{ direction: 'rtl' }}>
           <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-4">
             برديات العامية والكنوز الملكية
@@ -115,12 +122,15 @@ export default function StorePage() {
           
           {isUserLoading && (
             <div className="text-center mb-8">
-              <p className="text-lg font-semibold text-blue-600">جاري تأمين الاتصال بالنظام...</p>
+              <p className="text-lg font-semibold text-blue-600 flex items-center justify-center gap-2">
+                <i className="fas fa-spinner fa-spin"></i>
+                جاري تأمين الاتصال بالنظام...
+              </p>
             </div>
           )}
 
           {paymentMessage && (
-            <div className={`p-4 rounded-lg text-right mb-8 ${paymentMessage.type === 'success' ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'}`} role="alert">
+            <div className={`p-4 rounded-lg text-right mb-8 ${paymentMessage.type === 'success' ? 'bg-green-100 text-green-800 border border-green-300' : 'bg-red-100 text-red-800 border border-red-300'}`} role="alert">
               <p className="font-bold text-lg mb-2">{paymentMessage.title}</p>
               <p className="text-sm" dangerouslySetInnerHTML={{ __html: paymentMessage.body }}></p>
             </div>
@@ -128,9 +138,9 @@ export default function StorePage() {
             
           <Tabs defaultValue="digital_products" className="w-full">
             <TabsList className="grid w-full grid-cols-3 bg-gray-200 p-2 rounded-xl">
-              <TabsTrigger value="digital_products" className="flex items-center gap-2 font-bold"><ShoppingCart className="w-5 h-5"/> منتجات رقمية</TabsTrigger>
-              <TabsTrigger value="redeem_points" className="flex items-center gap-2 font-bold"><PiggyBank className="w-5 h-5"/> استبدال بالنقاط</TabsTrigger>
-              <TabsTrigger value="gifts" className="flex items-center gap-2 font-bold"><Gift className="w-5 h-5"/> قسم الهدايا</TabsTrigger>
+              <TabsTrigger value="digital_products" className="flex items-center gap-2 font-bold data-[state=active]:bg-nile data-[state=active]:text-white"><ShoppingCart className="w-5 h-5"/> منتجات رقمية</TabsTrigger>
+              <TabsTrigger value="redeem_points" className="flex items-center gap-2 font-bold data-[state=active]:bg-nile data-[state=active]:text-white"><PiggyBank className="w-5 h-5"/> استبدال بالنقاط</TabsTrigger>
+              <TabsTrigger value="gifts" className="flex items-center gap-2 font-bold data-[state=active]:bg-nile data-[state=active]:text-white"><Gift className="w-5 h-5"/> قسم الهدايا</TabsTrigger>
             </TabsList>
             
             <TabsContent value="digital_products" className="mt-8">
@@ -237,9 +247,10 @@ export default function StorePage() {
         .product-card:hover {
           transform: translateY(-5px);
         }
+        .royal-title {
+          font-family: 'El Messiri', sans-serif;
+        }
       `}</style>
     </div>
   );
 }
-
-    
