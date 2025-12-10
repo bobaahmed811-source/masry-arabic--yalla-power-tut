@@ -23,11 +23,10 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Sparkles } from 'lucide-react';
+import { Loader2, Sparkles, User, GraduationCap } from 'lucide-react';
 import Link from 'next/link';
 
 const formSchema = z.object({
@@ -39,8 +38,13 @@ const formSchema = z.object({
   }),
 });
 
+interface ChatMessage {
+    type: 'user' | 'tutor';
+    text: string;
+}
+
 export default function TutorPage() {
-  const [tutorResponse, setTutorResponse] = useState('');
+  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
@@ -54,16 +58,16 @@ export default function TutorPage() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    setTutorResponse('');
+
+    const userMessage: ChatMessage = { type: 'user', text: values.question };
+    setChatHistory(prev => [...prev, userMessage]);
 
     const result = await getTutorResponse(values);
+    form.resetField('question');
 
     if (result.success) {
-      setTutorResponse(result.success);
-      toast({
-        title: '✅ تم استلام إجابة المعلم',
-        description: 'ها هي إجابة المعلم الخصوصي على سؤالك.',
-      });
+      const tutorMessage: ChatMessage = { type: 'tutor', text: result.success };
+      setChatHistory(prev => [...prev, tutorMessage]);
     } else {
       toast({
         variant: 'destructive',
@@ -79,8 +83,8 @@ export default function TutorPage() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-nile-dark p-4">
-      <Card className="w-full max-w-2xl dashboard-card text-white">
-        <CardHeader className="text-center">
+      <Card className="w-full max-w-2xl dashboard-card text-white flex flex-col h-[90vh]">
+        <CardHeader className="text-center flex-shrink-0">
           <div className="flex justify-center items-center mb-4">
             <i className="fas fa-user-graduate text-4xl text-gold-accent"></i>
           </div>
@@ -88,86 +92,99 @@ export default function TutorPage() {
             المعلم الخصوصي الذكي
           </CardTitle>
           <CardDescription className="text-sand-ochre">
-            ضع المادة التي تذاكرها هنا، واطرح أي سؤال يخطر ببالك!
+            ضع المادة التي تذاكرها، واطرح أي سؤال يخطر ببالك!
           </CardDescription>
         </CardHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <CardContent className="space-y-4">
-              <FormField
-                control={form.control}
-                name="courseMaterial"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-sand-ochre">
-                      المادة الدراسية (السياق)
-                    </FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="الصق هنا النص أو الفقرة التي تحتاج مساعدة فيها..."
-                        {...field}
-                        className="bg-nile-dark border-sand-ochre text-white min-h-[150px] resize-y placeholder:text-sand-ochre/50 focus:ring-gold-accent"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+        
+        <CardContent className="flex-grow overflow-y-auto p-4 space-y-4">
+           <Form {...form}>
+            <form id="context-form" className="space-y-4">
+                <FormField
+                    control={form.control}
+                    name="courseMaterial"
+                    render={({ field }) => (
+                    <FormItem>
+                        <FormControl>
+                        <Textarea
+                            placeholder="الصق هنا النص أو الفقرة التي تحتاج مساعدة فيها (السياق)..."
+                            {...field}
+                            className="bg-nile-dark border-sand-ochre text-white min-h-[100px] resize-y placeholder:text-sand-ochre/50 focus:ring-gold-accent"
+                        />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                    )}
+                />
+            </form>
+           </Form>
+
+            {chatHistory.map((chat, index) => (
+                <div key={index} className={`flex items-start gap-3 ${chat.type === 'user' ? 'justify-end' : 'justify-start'}`}>
+                    {chat.type === 'tutor' && (
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-sand-ochre flex items-center justify-center">
+                            <GraduationCap className="w-5 h-5 text-nile-dark" />
+                        </div>
+                    )}
+                    <div className={`max-w-[80%] p-3 rounded-xl shadow-md ${chat.type === 'user' ? 'bg-gold-accent text-nile-dark rounded-br-none' : 'bg-nile text-white rounded-tl-none'}`}>
+                        <p className="whitespace-pre-wrap">{chat.text}</p>
+                    </div>
+                     {chat.type === 'user' && (
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-nile-dark flex items-center justify-center border-2 border-gold-accent">
+                            <User className="w-5 h-5 text-gold-accent" />
+                        </div>
+                    )}
+                </div>
+            ))}
+             {isLoading && (
+                <div className="flex items-start gap-3 justify-start">
+                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-sand-ochre flex items-center justify-center">
+                        <Loader2 className="w-5 h-5 text-nile-dark animate-spin" />
+                    </div>
+                    <div className="max-w-[80%] p-3 rounded-xl shadow-md bg-nile text-white rounded-tl-none">
+                       <p>جاري التفكير...</p>
+                    </div>
+                </div>
+            )}
+        </CardContent>
+
+        <CardFooter className="p-4 border-t-2 border-gold-accent/50 flex-shrink-0">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="w-full flex items-center gap-3">
               <FormField
                 control={form.control}
                 name="question"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-sand-ochre">سؤالك</FormLabel>
+                  <FormItem className="flex-grow">
                     <FormControl>
                       <Input
                         placeholder="اطرح سؤالك عن النص أعلاه..."
                         {...field}
+                        disabled={isLoading}
                         className="bg-nile-dark border-sand-ochre text-white placeholder:text-sand-ochre/50 focus:ring-gold-accent"
                       />
                     </FormControl>
-                    <FormMessage />
                   </FormItem>
                 )}
               />
-            </CardContent>
-            <CardFooter className="flex flex-col gap-4">
               <Button
                 type="submit"
-                className="w-full cta-button"
+                className="cta-button !p-3"
                 disabled={isLoading}
               >
                 {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    جاري التفكير...
-                  </>
+                  <Loader2 className="h-5 w-5 animate-spin" />
                 ) : (
-                  <>
-                    <Sparkles className="mr-2 h-4 w-4" />
-                    اسأل المعلم الذكي
-                  </>
+                  <Sparkles className="h-5 w-5" />
                 )}
+                 <span className="sr-only">اسأل</span>
               </Button>
-              <Link href="/" className="text-sm font-semibold text-sand-ochre hover:text-gold-accent transition">
-                 العودة للوحة التحكم
-            </Link>
-            </CardFooter>
-          </form>
-        </Form>
-        {tutorResponse && (
-          <div className="p-6 pt-0">
-            <Card className="bg-nile-dark border-sand-ochre p-4">
-              <CardHeader>
-                <CardTitle className="text-lg royal-title">إجابة المعلم:</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-white whitespace-pre-wrap">{tutorResponse}</p>
-              </CardContent>
-            </Card>
-          </div>
-        )}
+            </form>
+          </Form>
+        </CardFooter>
       </Card>
+      <Link href="/" className="text-sm font-semibold text-sand-ochre hover:text-gold-accent transition mt-4">
+            العودة للوحة التحكم
+      </Link>
     </div>
   );
 }
