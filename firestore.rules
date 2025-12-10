@@ -210,14 +210,14 @@ service cloud.firestore {
      * @description Stores digital purchase records created by users.
      * @path /artifacts/{appId}/public/data/digital_purchases/{purchaseId}
      * @allow (create) An authenticated user creating a purchase record for themselves.
-     * @deny (list) Any user attempting to list all purchase records in the system.
-     * @principle Users can create their own purchase requests. Reading is restricted to the owner. Updates and deletes are disabled for users, pending an admin-level process for fulfillment.
+     * @allow (get, list) An authenticated user can read their own purchase records.
+     * @deny (list) Denies listing all purchase records in the system.
+     * @principle Users can create their own purchase requests. Reading is restricted to the owner. Updates and deletes are disabled for users.
      */
     match /artifacts/{appId}/public/data/digital_purchases/{purchaseId} {
-      allow get: if resource != null && isOwner(resource.data.userId);
-      allow list: if false;
+      allow get, list: if resource != null && isOwner(resource.data.userId);
       allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
-      allow update, delete: if false; // TODO: Allow backend/admin roles to update status to 'Completed'.
+      allow update, delete: if false; // TODO: Allow backend/admin roles to update status.
     }
     
     /**

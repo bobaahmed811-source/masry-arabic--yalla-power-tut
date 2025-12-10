@@ -500,6 +500,15 @@
         "status": {
           "type": "string",
           "description": "Status of the purchase (e.g., 'Awaiting Payment', 'Completed', 'Refunded')."
+        },
+        "isGift": {
+          "type": "boolean",
+          "description": "Indicates if the purchase is a gift for another user."
+        },
+        "recipientEmail": {
+          "type": "string",
+          "format": "email",
+          "description": "The email address of the gift recipient."
         }
       },
       "required": [
