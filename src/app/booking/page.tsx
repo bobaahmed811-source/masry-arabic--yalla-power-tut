@@ -144,7 +144,7 @@ export default function BookingPage() {
                     {formatDate(dateKey)}
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {scheduleByDate[dateKey].map(lesson => (
+                    {scheduleByDate[dateKey].map((lesson:any) => (
                       <Card key={lesson.id} className="stat-card p-0 flex flex-col overflow-hidden cursor-pointer" onClick={() => handleSelectLesson(lesson)}>
                           <CardHeader className="flex-grow p-4">
                               <div className="flex items-center gap-4 mb-3">
@@ -225,6 +225,3 @@ export default function BookingPage() {
     </div>
   );
 };
-
-
-    
