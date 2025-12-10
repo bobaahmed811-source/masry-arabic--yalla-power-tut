@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
 
 // Language and Quiz Data
 const lang: Record<string, any> = {
@@ -99,6 +100,7 @@ export default function PlacementTestPage() {
     const [showResult, setShowResult] = useState(false);
     const [finalScore, setFinalScore] = useState(0);
     const { toast } = useToast();
+    const router = useRouter();
 
     const texts = lang[currentLang] || lang.ar;
     const isRtl = currentLang === 'ar';
@@ -161,6 +163,11 @@ export default function PlacementTestPage() {
         const resultMessage = texts.result[messageKey];
 
         return { iconClass, resultTitle, resultMessage };
+    };
+
+    const handleStartJourney = () => {
+        // In a real app, you'd save the level to Firestore.
+        router.push('/');
     };
 
     const progress = ((currentQuestionIndex) / quizData.length) * 100;
@@ -259,11 +266,13 @@ export default function PlacementTestPage() {
                         <i className={`fas ${iconClass} text-6xl mb-4 text-gold-accent`}></i>
                         <h3 id="result-title-text" className="text-3xl font-bold mb-4 text-white royal-title">{resultTitle}</h3>
                         <p id="result-message-text" className="text-lg mb-6 text-sand-ochre">{resultMessage}</p>
-                        <Link href="/">
-                            <Button id="start_journey-button" className="cta-button px-6 py-2 rounded-full">
-                                {texts.start_journey}
-                            </Button>
-                        </Link>
+                        <Button 
+                            id="start_journey-button" 
+                            className="cta-button px-6 py-2 rounded-full"
+                            onClick={handleStartJourney}
+                        >
+                            {texts.start_journey}
+                        </Button>
                     </div>
                 )}
             </div>
