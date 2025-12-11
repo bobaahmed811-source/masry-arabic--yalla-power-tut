@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -7,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
-import { Send, MessagesSquare } from 'lucide-react';
+import { Send, MessagesSquare, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 
@@ -67,7 +68,12 @@ const CommunityChatPage = () => {
   };
   
   if (isUserLoading) {
-    return <div className="text-center text-white p-10">جاري التحقق من الهوية الملكية...</div>;
+    return (
+        <div className="flex items-center justify-center min-h-screen bg-nile-dark">
+            <Loader2 className="h-12 w-12 text-gold-accent animate-spin" />
+            <p className="text-white text-xl mr-4">جاري التحقق من الهوية الملكية...</p>
+        </div>
+    );
   }
 
   if (!user) {
@@ -92,8 +98,8 @@ const CommunityChatPage = () => {
       
       <Card className="flex-grow flex flex-col dashboard-card overflow-hidden">
         <CardContent className="flex-grow p-4 overflow-y-auto space-y-4">
-           {isLoadingMessages && <div className="text-center text-sand-ochre">جاري تحميل الرسائل...</div>}
-           {error && <div className="text-center text-red-500">حدث خطأ أثناء تحميل الرسائل. قد تكون هناك مشكلة في الصلاحيات.</div>}
+           {isLoadingMessages && <div className="flex justify-center items-center h-full"><Loader2 className="h-8 w-8 animate-spin text-sand-ochre" /><p className="mr-3 text-sand-ochre">جاري تحميل الرسائل...</p></div>}
+           {error && <div className="text-center text-red-500 p-4">حدث خطأ أثناء تحميل الرسائل: {error.message}</div>}
            {messages && messages.map(msg => (
              <div key={msg.id} className={`flex items-end gap-2 ${msg.senderId === user.uid ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-md p-3 rounded-lg ${msg.senderId === user.uid ? 'bg-gold-accent text-nile-dark rounded-br-none' : 'bg-nile rounded-bl-none'}`}>
@@ -107,6 +113,11 @@ const CommunityChatPage = () => {
                 </div>
              </div>
            ))}
+            {messages?.length === 0 && !isLoadingMessages && (
+                <div className="text-center text-sand-ochre/80 pt-10">
+                    <p>لا توجد رسائل بعد. كوني أول من يبدأ الحوار!</p>
+                </div>
+            )}
            <div ref={messagesEndRef} />
         </CardContent>
         
@@ -121,12 +132,12 @@ const CommunityChatPage = () => {
                     disabled={isSending}
                 />
                 <Button type="submit" className="cta-button" disabled={isSending || !newMessage.trim()}>
-                    <Send className="w-5 h-5" />
+                    {isSending ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
                 </Button>
             </form>
         </div>
       </Card>
-      <Link href="/" className="utility-button px-4 py-2 text-sm font-bold rounded-lg flex items-center justify-center mt-4 mx-auto">
+      <Link href="/" className="utility-button px-4 py-2 text-sm font-bold rounded-lg flex items-center justify-center mt-4 mx-auto w-fit">
             العودة للوحة التحكم
       </Link>
     </div>
@@ -134,3 +145,5 @@ const CommunityChatPage = () => {
 };
 
 export default CommunityChatPage;
+
+    
