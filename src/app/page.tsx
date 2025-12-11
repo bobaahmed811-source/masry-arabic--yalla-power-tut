@@ -219,6 +219,8 @@ export default function HomePage() {
         fetchCourseData();
     } else if (!user) {
         setIsStatsLoading(false);
+        setLessonsCompleted(0);
+        setTotalLessons(0);
     }
   }, [progresses, firestore, isProgressLoading, user, toast]);
 
@@ -295,7 +297,7 @@ export default function HomePage() {
                     icon={<BookOpen className="h-6 w-6 text-sand-ochre" />}
                     value={`${lessonsCompleted} من ${totalLessons}`}
                     label="الدروس المكتملة"
-                    isLoading={isStatsLoading}
+                    isLoading={isStatsLoading || isProgressLoading}
                   />
               </div>
 
@@ -487,3 +489,5 @@ export default function HomePage() {
     </div>
   );
 }
+
+    

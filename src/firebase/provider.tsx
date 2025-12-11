@@ -7,6 +7,7 @@ import { Firestore, doc, getDoc, setDoc, DocumentData } from 'firebase/firestore
 import { Auth, User, onAuthStateChanged } from 'firebase/auth';
 import { FirebaseErrorListener } from '@/components/FirebaseErrorListener'
 import { useRouter } from 'next/navigation';
+import { createInitialProgress } from '@/lib/course-utils';
 
 
 interface FullUser extends User {
@@ -107,6 +108,9 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
               };
               await setDoc(userDocRef, newUserDoc);
               userData = newUserDoc;
+              
+              // Also create their initial progress document
+              await createInitialProgress(firestore, firebaseUser.uid);
             }
 
             const fullUser: FullUser = {
@@ -127,7 +131,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
 
           } catch (error) {
              console.error("Error fetching/creating user document:", error);
-             setUserAuthState({ user: firebaseUser, isUserLoading: false, userError: error as Error });
+             setUserAuthState({ user: firebaseUser as FullUser, isUserLoading: false, userError: error as Error });
           }
 
         } else {
@@ -238,3 +242,5 @@ export const useUser = (includeFirestore = false): UserHookResult => {
   
   return { user, isUserLoading, userError };
 };
+
+    
