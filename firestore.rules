@@ -65,7 +65,7 @@ service cloud.firestore {
     
     // Course content - should require enrollment
     match /courses/{courseId}/{subcollection}/{docId} {
-       allow get, list: if false; // TODO: Grant access based on a user enrollment check.
+       allow get, list: if isSignedIn(); // TODO: Grant access based on a user enrollment check.
        allow write: if false; // TODO: Grant access to course instructors/admins.
     }
     
@@ -113,5 +113,3 @@ service cloud.firestore {
     }
   }
 }
-
-    
