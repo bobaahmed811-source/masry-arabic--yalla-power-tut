@@ -47,10 +47,18 @@ export default function GoalsPage() {
         await updateDoc(userDocRef, {
             goal: selectedGoal
         });
+        
+        // AI-powered toast message
+        const goalText = {
+            social: "هدف رائع! ستكونين نجمة الجلسات الاجتماعية.",
+            business: "طموح ملكي! ستتفوقين في عالم الأعمال بالعامية المصرية.",
+            travel: "مغامرة مثيرة! ستتحدثين بثقة في كل شوارع مصر.",
+            academic: "مسعى العلماء! ستغوصين في أعماق كنوز المعرفة."
+        }[selectedGoal] || "تم تسجيل هدفك بنجاح.";
 
         toast({
             title: 'هدف نبيل!',
-            description: `تم تسجيل هدفك بنجاح. مرحباً بك في رحلتك الملكية!`,
+            description: ` يا ${user.displayName || 'ملكة'}, ${goalText} مرحباً بك في رحلتك الملكية!`,
         });
         
         router.push('/');
@@ -242,3 +250,5 @@ const GoalCard = ({
     </div>
   );
 };
+
+    

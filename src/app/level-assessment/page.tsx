@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { BarChart3, Check } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { useUser } from '@/firebase';
 
 const assessmentData = {
   title: "ما هو مستواك الحالي في اللهجة المصرية؟",
@@ -24,6 +25,7 @@ export default function LevelAssessmentPage() {
   const [selectedValue, setSelectedValue] = useState<string | null>(null);
   const { toast } = useToast();
   const router = useRouter();
+  const { user } = useUser();
 
   const handleSubmit = () => {
     if (!selectedValue) {
@@ -36,15 +38,35 @@ export default function LevelAssessmentPage() {
     }
     
     // In a real app, this value would be saved to the user's profile.
-    // For now, we'll just show a toast and redirect.
+    // For now, we'll just show an AI-powered toast and redirect.
+
+    const levelLabel = assessmentData.options.find(o => o.value === selectedValue)?.label || "المحدد";
+    const aiMessage = {
+        beginner: `رائع! كل رحلة عظيمة تبدأ بخطوة. مسار التعلم الملكي هو أفضل بداية لك.`,
+        intermediate: `ممتاز! أنت في منتصف الطريق. تحديات حوارات السوق ستصقل مهاراتك.`,
+        advanced: `مستوى فرعوني متقدم! أنت جاهز للغوص في نقاشات أعمق في واحة القرآن والمتحف الافتراضي.`
+    }[selectedValue] || `لقد تم تسجيل مستواك كـ "${levelLabel}". سنقوم بتخصيص التجربة لك!`;
+
     toast({
       title: 'تم تحديد مستواك!',
-      description: `لقد تم تسجيل مستواك كـ "${assessmentData.options.find(o => o.value === selectedValue)?.label}". سنقوم بتخصيص التجربة لك!`,
+      description: aiMessage,
     });
     
     // Redirect to the main dashboard
     router.push('/');
   };
+  
+    if (!user) {
+    return (
+       <div className="antialiased flex flex-col items-center justify-center min-h-screen bg-nile-dark p-4 text-center">
+            <h1 className="text-3xl royal-title text-red-400 mb-4">الدخول محظور</h1>
+            <p className="text-sand-ochre mb-6">يجب تسجيل الدخول للوصول إلى هذه القاعة.</p>
+            <Link href="/login">
+                <Button className="cta-button">العودة إلى بوابة الدخول</Button>
+            </Link>
+       </div>
+    )
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-nile-dark p-4">
@@ -109,3 +131,5 @@ export default function LevelAssessmentPage() {
     </div>
   );
 }
+
+    
