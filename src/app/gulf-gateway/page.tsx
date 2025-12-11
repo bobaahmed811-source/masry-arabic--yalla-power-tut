@@ -1,14 +1,13 @@
-
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import Link from 'next/link';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
-import { ArrowRight, Globe, Loader2, Search } from 'lucide-react';
-import { Input } from '@/components/ui/input';
+import { ArrowRight, BookCopy, Car, Loader2, ShoppingBasket, Building2 } from 'lucide-react';
+import Image from 'next/image';
 
-interface GulfPhrase {
+interface AdventureChallenge {
   id: string;
   gulf_phrase: string;
   egyptian_phrase: string;
@@ -16,113 +15,136 @@ interface GulfPhrase {
   category: string;
 }
 
-// Group phrases by category
-const groupPhrasesByCategory = (phrases: GulfPhrase[] | null) => {
-    if (!phrases) return {};
-    return phrases.reduce((acc, phrase) => {
-        const category = phrase.category || 'مصطلحات عامة';
+const STOPS = [
+    { 
+        id: 'taxi',
+        title: 'المحطة الأولى: حوار مع سائق التاكسي', 
+        description: 'تتعلم نوف كيف تطلب وتتفاهم مع سائقي الأجرة في شوارع القاهرة.',
+        icon: Car, 
+        category: 'المواصلات'
+    },
+    { 
+        id: 'market',
+        title: 'المحطة الثانية: مساومات في خان الخليلي', 
+        description: 'تخوض نوف مغامرة الشراء والمساومة في أشهر أسواق مصر.',
+        icon: ShoppingBasket, 
+        category: 'في السوق'
+    },
+    { 
+        id: 'restaurant',
+        title: 'المحطة الثالثة: طلبات في مطعم كشري',
+        description: 'تكتشف نوف طريقة طلب الأطباق المصرية الأصيلة.',
+        icon: Building2,
+        category: 'الطعام والشراب'
+    },
+];
+
+const groupChallengesByCategory = (challenges: AdventureChallenge[] | null) => {
+    if (!challenges) return {};
+    return challenges.reduce((acc, challenge) => {
+        const category = challenge.category || 'مصطلحات عامة';
         if (!acc[category]) {
             acc[category] = [];
         }
-        acc[category].push(phrase);
+        acc[category].push(challenge);
         return acc;
-    }, {} as Record<string, GulfPhrase[]>);
+    }, {} as Record<string, AdventureChallenge[]>);
 };
 
-
-export default function GulfGatewayPage() {
+export default function NoufsJourneyPage() {
   const firestore = useFirestore();
-  const [searchTerm, setSearchTerm] = useState('');
 
-  const gulfPhrasesCollection = useMemoFirebase(() => {
-    return firestore ? collection(firestore, 'gulf_phrases') : null;
+  const adventureCollection = useMemoFirebase(() => {
+    return firestore ? collection(firestore, 'adventure_challenges') : null;
   }, [firestore]);
 
-  const { data: phrases, isLoading, error } = useCollection<GulfPhrase>(gulfPhrasesCollection);
+  const { data: challenges, isLoading, error } = useCollection<AdventureChallenge>(adventureCollection);
 
-  const filteredPhrases = useMemo(() => {
-    if (!phrases) return null;
-    if (!searchTerm) return phrases;
-    return phrases.filter(p => 
-        p.gulf_phrase.includes(searchTerm) || 
-        p.egyptian_phrase.includes(searchTerm)
-    );
-  }, [phrases, searchTerm]);
-
-  const phrasesByCategory = useMemo(() => groupPhrasesByCategory(filteredPhrases), [filteredPhrases]);
+  const challengesByStop = useMemo(() => groupChallengesByCategory(challenges), [challenges]);
 
   return (
     <div 
       className="min-h-screen p-4 md:p-8 flex flex-col bg-nile-dark"
-      style={{
-        direction: 'rtl',
-      }}
+      style={{ direction: 'rtl' }}
     >
-      <header className="text-center my-12">
-        <div className="inline-block p-4 bg-nile rounded-full shadow-lg mb-4 border-2 border-gold-accent">
-          <Globe className="w-16 h-16 text-white" />
+      <header className="text-center my-12 relative">
+        <div className="flex flex-col items-center justify-center">
+            <div className="relative mb-4">
+                <Image
+                    src="https://picsum.photos/seed/nouf-avatar/200/200"
+                    alt="شخصية نوف الكرتونية"
+                    width={120}
+                    height={120}
+                    className="rounded-full border-4 border-gold-accent shadow-lg"
+                    data-ai-hint="saudi girl cartoon"
+                />
+                 <span className="absolute -bottom-2 -right-2 text-4xl">🇸🇦</span>
+            </div>
+            <h1 className="text-5xl md:text-6xl font-extrabold text-white mb-2 royal-title">
+              رحلة نوف في مصر
+            </h1>
+            <p className="text-xl text-sand-ochre max-w-2xl mx-auto">
+              انضمي إلى نوف، فتاة سعودية شجاعة، في مغامرتها لاستكشاف اللهجة المصرية. في كل محطة، ستواجه تحديات لغوية جديدة وتتعلم كيف تتواصل كأهل البلد.
+            </p>
         </div>
-        <h1 className="text-5xl md:text-6xl font-extrabold text-white mb-2 royal-title">
-          بوابة الخليج
-        </h1>
-        <p className="text-2xl text-sand-ochre">
-          قاموسك لترجمة الكلمات من اللهجات الخليجية إلى العامية المصرية.
-        </p>
       </header>
 
       <main className="w-full max-w-4xl mx-auto flex-grow">
-          <div className="relative mb-8">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-sand-ochre" />
-              <Input 
-                type="text"
-                placeholder="ابحث عن كلمة بالخليجي أو المصري..."
-                className="w-full bg-nile-dark border-2 border-sand-ochre text-white text-lg p-6 pl-12 rounded-full"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-          </div>
-
         {isLoading && (
             <div className="flex justify-center items-center h-64">
                 <Loader2 className="w-12 h-12 text-gold-accent animate-spin" />
-                <p className="text-center text-lg text-sand-ochre ml-4">جاري تحميل قاموس اللهجات...</p>
+                <p className="text-center text-lg text-sand-ochre ml-4">جاري تحضير محطات رحلة نوف...</p>
             </div>
         )}
-        {error && <p className="text-center text-lg text-red-400">حدث خطأ أثناء تحميل القاموس: {error.message}</p>}
+        {error && <p className="text-center text-lg text-red-400">حدث خطأ أثناء تحميل الرحلة: {error.message}</p>}
 
-        {!isLoading && filteredPhrases && Object.keys(phrasesByCategory).length > 0 ? (
-          <div className="space-y-8">
-            {Object.entries(phrasesByCategory).map(([category, phraseList]) => (
-              <div key={category}>
-                <h2 className="text-3xl font-bold royal-title text-gold-accent mb-4 border-r-4 border-sand-ochre pr-4">{category}</h2>
-                <div className="space-y-4">
-                  {phraseList.map(phrase => (
-                    <div key={phrase.id} className="dashboard-card p-5 rounded-lg">
-                        <div className="grid grid-cols-2 gap-4 items-center">
-                            <div className="text-center">
-                                <p className="text-sm text-sand-ochre">خليجي</p>
-                                <p className="text-2xl font-bold text-white">{phrase.gulf_phrase}</p>
+        {!isLoading && challenges && (
+          <div className="space-y-12">
+            {STOPS.map((stop, index) => {
+                const stopChallenges = challengesByStop[stop.category] || [];
+                return (
+                    <section key={stop.id}>
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="flex-shrink-0 bg-gold-accent text-nile-dark p-3 rounded-full shadow-md">
+                                <stop.icon className="w-8 h-8" />
                             </div>
-                            <div className="text-center border-r-2 border-sand-ochre/20">
-                                <p className="text-sm text-sand-ochre">مصري</p>
-                                <p className="text-2xl font-bold text-white">{phrase.egyptian_phrase}</p>
+                            <div>
+                               <h2 className="text-3xl font-bold royal-title text-gold-accent">{stop.title}</h2>
+                               <p className="text-sand-ochre">{stop.description}</p>
                             </div>
                         </div>
-                        {phrase.explanation && (
-                            <div className="mt-4 pt-3 border-t border-sand-ochre/20">
-                                <p className="text-sm text-gray-300"><strong className="text-gold-accent">توضيح:</strong> {phrase.explanation}</p>
+
+                        {stopChallenges.length > 0 ? (
+                        <div className="space-y-4">
+                            {stopChallenges.map(challenge => (
+                                <div key={challenge.id} className="dashboard-card p-5 rounded-lg border-l-4 border-gold-accent/50">
+                                    <div className="grid grid-cols-2 gap-4 items-center">
+                                        <div className="text-center">
+                                            <p className="text-sm text-sand-ochre font-bold">نوف تقول (بالخليجي)</p>
+                                            <p className="text-2xl font-bold text-white">{challenge.gulf_phrase}</p>
+                                        </div>
+                                        <div className="text-center border-r-2 border-sand-ochre/20">
+                                            <p className="text-sm text-sand-ochre font-bold">المرادف المصري</p>
+                                            <p className="text-2xl font-bold text-white">{challenge.egyptian_phrase}</p>
+                                        </div>
+                                    </div>
+                                    {challenge.explanation && (
+                                        <div className="mt-4 pt-3 border-t border-sand-ochre/20">
+                                            <p className="text-sm text-gray-300"><strong className="text-gold-accent flex items-center gap-1"><BookCopy size={14}/> توضيح اللهجة:</strong> {challenge.explanation}</p>
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                        ) : (
+                            <div className="dashboard-card p-5 rounded-lg text-center">
+                                 <p className="text-sand-ochre">لم تصل رحلة نوف إلى هذه المحطة بعد. أضف تحديات من ديوان الإدارة!</p>
                             </div>
                         )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
+                    </section>
+                )
+            })}
           </div>
-        ) : !isLoading && (
-             <p className="text-center text-sand-ochre py-10 text-lg">
-                {searchTerm ? `لم يتم العثور على نتائج للبحث عن "${searchTerm}".` : 'لا توجد عبارات في القاموس حالياً. يمكنك إضافتها من ديوان الإدارة الملكية.'}
-            </p>
         )}
       </main>
 
@@ -136,7 +158,3 @@ export default function GulfGatewayPage() {
     </div>
   );
 }
-
-    
-
-    
