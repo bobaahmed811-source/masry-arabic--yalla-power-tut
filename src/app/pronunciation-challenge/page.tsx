@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
@@ -46,6 +45,7 @@ type AnalysisResult = {
 const lang: Record<string, Record<string, string>> = {
   ar: {
     title: "تحديات قوة حتشبسوت الفرعونية",
+    slogan: "هو واقع المتعة فى التعلم",
     mentor: "استمعي للمرسوم الملكي، ثم أعلني ولاءك بترديده",
     loading_phrases: "جاري تحميل المراسيم الملكية...",
     record: 'سجل صوتك',
@@ -61,9 +61,12 @@ const lang: Record<string, Record<string, string>> = {
     mic_unsupported_title: 'المتصفح غير مدعوم',
     mic_unsupported_desc: 'خاصية تسجيل الصوت غير مدعومة في هذا المتصفح.',
     analysis_error: 'فشل تحليل النطق.',
+    your_recording: 'تسجيلك:',
+    evaluation_title: 'تقييم أذن فرعون',
   },
   en: {
     title: "Hatshepsut's Pharaoh's Might Challenges",
+    slogan: "The Reality of Fun in Learning",
     mentor: "Listen to the royal decree, then declare your loyalty by repeating it.",
     loading_phrases: 'Loading Royal Decrees...',
     record: 'Record Voice',
@@ -79,6 +82,8 @@ const lang: Record<string, Record<string, string>> = {
     mic_unsupported_title: 'Browser Not Supported',
     mic_unsupported_desc: 'Audio recording is not supported in this browser.',
     analysis_error: 'Pronunciation analysis failed.',
+    your_recording: 'Your Recording:',
+    evaluation_title: "Pharaoh's Ear Evaluation",
   },
 };
 
@@ -269,7 +274,8 @@ export default function PronunciationChallengePage() {
           <h1 className="text-4xl font-extrabold text-dark-granite mb-2">
             <span className="royal-title text-gold-accent">{texts.title}</span>
           </h1>
-          <p className="text-lg text-sand-ochre">{texts.mentor}</p>
+           <p className="text-xl font-bold text-sand-ochre">{texts.slogan}</p>
+          <p className="text-lg text-sand-ochre mt-2">{texts.mentor}</p>
         </div>
 
         <div className="bg-nile p-8 md:p-12 rounded-xl shadow-inner border-2 border-sand-ochre/20">
@@ -311,7 +317,7 @@ export default function PronunciationChallengePage() {
           
           {userAudioUrl && (
             <div className="mt-6 bg-nile-dark/50 p-4 rounded-lg">
-                <h3 className="text-sand-ochre font-bold mb-2">تسجيلك:</h3>
+                <h3 className="text-sand-ochre font-bold mb-2">{texts.your_recording}</h3>
                 <audio src={userAudioUrl} controls className="w-full" />
                  <Button onClick={handleAnalyzePronunciation} disabled={isAnalyzing} className="w-full mt-4 cta-button bg-teal-600 hover:bg-teal-700">
                     {isAnalyzing ? <Loader2 className="animate-spin ml-2" /> : <WandSparkles className="ml-2"/>}
@@ -324,9 +330,9 @@ export default function PronunciationChallengePage() {
                 <div className="mt-6 p-4 rounded-lg bg-nile-dark/70 border border-sand-ochre/50">
                     <div className="flex items-center gap-3">
                         {getEvaluationIcon()}
-                        <h4 className="text-xl font-bold royal-title text-gold-accent">تقييم أذن فرعون</h4>
+                        <h4 className="text-xl font-bold royal-title text-gold-accent">{texts.evaluation_title}</h4>
                     </div>
-                    <p className="mt-2 text-lg text-sand-ochre mr-11">{analysisResult.feedback}</p>
+                    <p className={cn("mt-2 text-lg text-sand-ochre", isRtl ? "mr-11" : "ml-11")}>{analysisResult.feedback}</p>
                 </div>
             )}
 
