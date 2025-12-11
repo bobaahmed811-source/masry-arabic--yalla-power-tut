@@ -1,15 +1,13 @@
-
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, addDoc, serverTimestamp, query, orderBy } from 'firebase/firestore';
+import { collection, serverTimestamp, query, orderBy } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
 import { Send, MessagesSquare, Loader2 } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
 import { addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 
 // Define the type for a chat message
@@ -24,18 +22,17 @@ interface CommunityMessage {
 const CommunityChatPage = () => {
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
-  const { toast } = useToast();
   const [newMessage, setNewMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const messagesCollection = useMemoFirebase(() => {
+  const messagesCollectionQuery = useMemoFirebase(() => {
     if (!firestore) return null;
     // Querying the correct public collection, ordered by timestamp
     return query(collection(firestore, 'community_messages'), orderBy('timestamp', 'asc'));
   }, [firestore]);
 
-  const { data: messages, isLoading: isLoadingMessages, error } = useCollection<CommunityMessage>(messagesCollection);
+  const { data: messages, isLoading: isLoadingMessages, error } = useCollection<CommunityMessage>(messagesCollectionQuery);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -145,5 +142,3 @@ const CommunityChatPage = () => {
 };
 
 export default CommunityChatPage;
-
-    
