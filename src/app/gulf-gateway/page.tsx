@@ -1,12 +1,14 @@
-
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
-import { ArrowRight, BookCopy, Car, Loader2, ShoppingBasket, Utensils } from 'lucide-react';
+import { ArrowRight, BookCopy, Car, Loader2, ShoppingBasket, Utensils, Volume2 } from 'lucide-react';
 import Image from 'next/image';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+import { getSpeechAudio } from '@/app/ai-actions';
 
 interface AdventureChallenge {
   id: string;
@@ -51,6 +53,59 @@ const groupChallengesByCategory = (challenges: AdventureChallenge[] | null) => {
         return acc;
     }, {} as Record<string, AdventureChallenge[]>);
 };
+
+const ChallengeCard = ({ challenge }: { challenge: AdventureChallenge }) => {
+    const { toast } = useToast();
+    const [isLoadingAudio, setIsLoadingAudio] = useState<string | null>(null);
+
+    const playAudio = async (text: string, type: 'gulf' | 'egyptian') => {
+        setIsLoadingAudio(type);
+        toast({ title: 'جاري توليد الصوت...', description: 'قد يستغرق هذا بضع ثوانٍ.' });
+        try {
+            const result = await getSpeechAudio(text);
+            if (result.error || !result.media) {
+                throw new Error(result.error || 'لم يتم إرجاع أي مقطع صوتي.');
+            }
+            const audio = new Audio(result.media);
+            audio.play();
+            toast({ title: 'تم!', description: `تشغيل: "${text}"` });
+        } catch (error) {
+            toast({
+                variant: 'destructive',
+                title: '❌ خطأ في توليد الصوت',
+                description: (error as Error).message,
+            });
+        } finally {
+            setIsLoadingAudio(null);
+        }
+    };
+
+    return (
+        <div className="dashboard-card p-5 rounded-lg border-l-4 border-gold-accent/50">
+            <div className="grid grid-cols-2 gap-4 items-center">
+                <div className="text-center space-y-2">
+                    <p className="text-sm text-sand-ochre font-bold">نوف تقول (بالخليجي)</p>
+                    <p className="text-2xl font-bold text-white min-h-[64px] flex items-center justify-center">{challenge.gulf_phrase}</p>
+                    <Button size="icon" onClick={() => playAudio(challenge.gulf_phrase, 'gulf')} disabled={!!isLoadingAudio} className="cta-button rounded-full w-10 h-10">
+                        {isLoadingAudio === 'gulf' ? <Loader2 className="w-5 h-5 animate-spin" /> : <Volume2 className="w-5 h-5" />}
+                    </Button>
+                </div>
+                <div className="text-center border-r-2 border-sand-ochre/20 space-y-2">
+                    <p className="text-sm text-sand-ochre font-bold">المرادف المصري</p>
+                    <p className="text-2xl font-bold text-white min-h-[64px] flex items-center justify-center">{challenge.egyptian_phrase}</p>
+                    <Button size="icon" onClick={() => playAudio(challenge.egyptian_phrase, 'egyptian')} disabled={!!isLoadingAudio} className="cta-button rounded-full w-10 h-10">
+                        {isLoadingAudio === 'egyptian' ? <Loader2 className="w-5 h-5 animate-spin" /> : <Volume2 className="w-5 h-5" />}
+                    </Button>
+                </div>
+            </div>
+            {challenge.explanation && (
+                <div className="mt-4 pt-3 border-t border-sand-ochre/20">
+                    <p className="text-sm text-gray-300"><strong className="text-gold-accent flex items-center gap-1"><BookCopy size={14}/> توضيح اللهجة:</strong> {challenge.explanation}</p>
+                </div>
+            )}
+        </div>
+    );
+}
 
 export default function NoufsJourneyPage() {
   const firestore = useFirestore();
@@ -118,23 +173,7 @@ export default function NoufsJourneyPage() {
                         {stopChallenges.length > 0 ? (
                         <div className="space-y-4">
                             {stopChallenges.map(challenge => (
-                                <div key={challenge.id} className="dashboard-card p-5 rounded-lg border-l-4 border-gold-accent/50">
-                                    <div className="grid grid-cols-2 gap-4 items-center">
-                                        <div className="text-center">
-                                            <p className="text-sm text-sand-ochre font-bold">نوف تقول (بالخليجي)</p>
-                                            <p className="text-2xl font-bold text-white">{challenge.gulf_phrase}</p>
-                                        </div>
-                                        <div className="text-center border-r-2 border-sand-ochre/20">
-                                            <p className="text-sm text-sand-ochre font-bold">المرادف المصري</p>
-                                            <p className="text-2xl font-bold text-white">{challenge.egyptian_phrase}</p>
-                                        </div>
-                                    </div>
-                                    {challenge.explanation && (
-                                        <div className="mt-4 pt-3 border-t border-sand-ochre/20">
-                                            <p className="text-sm text-gray-300"><strong className="text-gold-accent flex items-center gap-1"><BookCopy size={14}/> توضيح اللهجة:</strong> {challenge.explanation}</p>
-                                        </div>
-                                    )}
-                                </div>
+                                <ChallengeCard key={challenge.id} challenge={challenge} />
                             ))}
                         </div>
                         ) : (
