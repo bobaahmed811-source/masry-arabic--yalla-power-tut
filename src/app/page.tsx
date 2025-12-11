@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -41,7 +42,7 @@ import {
   BarChart3,
   Target,
   MessagesSquare,
-  Globe, // New Icon
+  Globe,
 } from 'lucide-react';
 import { initiateSignOut } from '@/firebase/non-blocking-login';
 import { useToast } from '@/hooks/use-toast';

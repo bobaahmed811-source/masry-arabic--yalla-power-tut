@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { useDrag, useDrop, DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import Link from 'next/link';
@@ -47,7 +47,29 @@ const GameContent = () => {
   const [nilePoints, setNilePoints] = useState(0);
 
   const phrasesCollection = useMemoFirebase(() => firestore ? collection(firestore, 'phrases') : null, [firestore]);
-  const { data: puzzles, isLoading: isLoadingPuzzles } = useCollection<Phrase>(phrasesCollection);
+  const { data: allPuzzles, isLoading: isLoadingPuzzles } = useCollection<Phrase>(phrasesCollection);
+
+  const userGoal = user?.goal; // e.g., 'social', 'business', 'travel', 'academic'
+  
+  // Memoize the filtered puzzles based on user goal
+  const puzzles = useMemo(() => {
+    if (!allPuzzles) return [];
+    if (!userGoal || userGoal === 'social') return allPuzzles; // Default to all if no goal or social
+
+    const goalCategoryMap: Record<string, string[]> = {
+        business: ['الأعمال', 'رسمي'],
+        travel: ['في السوق', 'في المطار', 'في الفندق'],
+        academic: ['أكاديمي', 'فصحى'],
+    };
+
+    const relevantCategories = goalCategoryMap[userGoal] || [];
+    const filtered = allPuzzles.filter(p => relevantCategories.includes(p.category));
+
+    // If no puzzles match the specific goal, fall back to general categories
+    return filtered.length > 0 ? filtered : allPuzzles.filter(p => p.category === 'تعبيرات يومية' || p.category === 'التحيات والمجاملات');
+
+  }, [allPuzzles, userGoal]);
+
 
   const alias = user?.displayName || 'تحتمس الصغير';
   const currentPuzzle = puzzles ? puzzles[currentPuzzleIndex] : null;
@@ -190,13 +212,16 @@ const GameContent = () => {
   if (!puzzles || puzzles.length === 0) {
      return (
       <div className="flex flex-col items-center justify-center text-white p-10 h-full dashboard-card">
-        <h2 className="text-2xl royal-title mb-4">لا توجد ألغاز</h2>
-        <p className="text-sand-ochre mb-6">لا توجد عبارات في "ديوان الإدارة" لإنشاء تحديات. يرجى إضافة بعض العبارات أولاً.</p>
-        <Link href="/admin">
-            <Button className="cta-button">
-                الذهاب إلى ديوان الإدارة
-            </Button>
-        </Link>
+        <h2 className="text-2xl royal-title mb-4">لا توجد ألغاز مناسبة</h2>
+        <p className="text-sand-ochre mb-6 text-center">لم نجد أي ألغاز تناسب هدفك الحالي. يمكنك تغيير هدفك أو إضافة المزيد من العبارات المتنوعة في ديوان الإدارة.</p>
+        <div className="flex gap-4">
+            <Link href="/goals">
+                <Button className="utility-button">تغيير الهدف</Button>
+            </Link>
+            <Link href="/admin">
+                <Button className="cta-button">الذهاب إلى ديوان الإدارة</Button>
+            </Link>
+        </div>
       </div>
     );
   }
@@ -318,5 +343,3 @@ const WordScramblePage = () => {
 };
 
 export default WordScramblePage;
-
-    
