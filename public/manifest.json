@@ -1,7 +1,12 @@
 {
+  "theme_color": "#0d284e",
+  "background_color": "#0d284e",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/",
   "name": "Yalla Masry Academy",
   "short_name": "Yalla Masry",
-  "description": "The Royal Way for Women & Children to Learn Egyptian Arabic",
+  "description": "The premier online academy for women and children to master Egyptian Colloquial Arabic.",
   "icons": [
     {
       "src": "/icons/icon-192x192.png",
@@ -13,10 +18,5 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ],
-  "theme_color": "#0d284e",
-  "background_color": "#0d284e",
-  "start_url": "/",
-  "display": "standalone",
-  "orientation": "portrait"
+  ]
 }
