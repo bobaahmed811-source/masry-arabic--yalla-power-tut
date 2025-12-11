@@ -170,5 +170,4 @@ export default function InstructorProfilePage() {
     </div>
   );
 }
-
     

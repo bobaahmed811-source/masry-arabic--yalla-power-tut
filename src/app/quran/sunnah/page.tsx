@@ -80,5 +80,4 @@ export default function SunnahPage() {
     </div>
   );
 }
-
     
