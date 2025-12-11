@@ -88,7 +88,7 @@ const AdminDashboardPage = () => {
   const productsCollection = useMemoFirebase(() => firestore ? collection(firestore, 'products') : null, [firestore]);
   const booksCollection = useMemoFirebase(() => firestore ? collection(firestore, 'books') : null, [firestore]);
   const hadithsCollection = useMemoFirebase(() => firestore ? collection(firestore, 'hadiths') : null, [firestore]);
-  const lessonsCollection = useMemoFirebase(() => selectedCourseForLessons ? collection(firestore!, `courses/${selectedCourseForLessons.id}/lessons`) : null, [firestore, selectedCourseForLessons]);
+  const lessonsCollection = useMemoFirebase(() => (firestore && selectedCourseForLessons) ? collection(firestore, `courses/${selectedCourseForLessons.id}/lessons`) : null, [firestore, selectedCourseForLessons]);
 
   // --- Data Hooks ---
   const { data: instructors, isLoading: isLoadingInstructors } = useCollection<Instructor>(instructorsCollection);
@@ -114,11 +114,10 @@ const AdminDashboardPage = () => {
     setCurrentState({});
   }
 
-  const handleSave = async (collectionName: string, data: any, requiredFields: string[], type: keyof typeof dialogState) => {
+  const handleSave = async (collectionPath: string, data: any, requiredFields: string[], type: keyof typeof dialogState) => {
     if (!firestore) return;
-    const collectionRef = collection(firestore, collectionName);
 
-    if (requiredFields.some(field => !data[field])) {
+    if (requiredFields.some(field => !data[field] && data[field] !== 0)) { // Allow 0 as a valid value for price/order
       toast({ variant: 'destructive', title: 'خطأ', description: 'الرجاء ملء جميع الحقول المطلوبة.' });
       return;
     }
@@ -126,16 +125,16 @@ const AdminDashboardPage = () => {
     setIsSubmitting(true);
     try {
       if (data.id) {
-        await setDocumentNonBlocking(doc(collectionRef, data.id), data, { merge: true });
+        await setDocumentNonBlocking(doc(firestore, collectionPath, data.id), data, { merge: true });
         toast({ title: 'تم التحديث', description: 'تم تحديث البيانات بنجاح.' });
       } else {
-        await addDocumentNonBlocking(collectionRef, data);
+        await addDocumentNonBlocking(collection(firestore, collectionPath), data);
         toast({ title: 'تمت الإضافة', description: 'تمت إضافة البيانات بنجاح.' });
       }
       closeDialog(type);
     } catch (error) { 
       console.error(error); 
-      toast({ variant: 'destructive', title: 'خطأ فادح', description: `فشل حفظ البيانات في ${collectionName}.`}); 
+      toast({ variant: 'destructive', title: 'خطأ فادح', description: `فشل حفظ البيانات في ${collectionPath}.`}); 
     } finally { 
       setIsSubmitting(false); 
     }
@@ -317,3 +316,5 @@ const AdminDashboardPage = () => {
 };
 
 export default AdminDashboardPage;
+
+    

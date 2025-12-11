@@ -39,8 +39,7 @@ const BookCard = ({ book }: { book: Book }) => {
 export default function LibraryPage() {
   const firestore = useFirestore();
   const booksCollection = useMemoFirebase(() => {
-    if (!firestore) return null;
-    return collection(firestore, 'books');
+    return firestore ? collection(firestore, 'books') : null;
   }, [firestore]);
 
   const { data: books, isLoading, error } = useCollection<Book>(booksCollection);
@@ -94,3 +93,5 @@ export default function LibraryPage() {
     </div>
   );
 }
+
+    

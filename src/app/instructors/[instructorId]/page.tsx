@@ -123,6 +123,10 @@ export default function InstructorProfilePage() {
                     <div className="flex items-center gap-3"><Tag className="text-gold-accent"/><div><h4 className="font-bold text-gray-400 text-sm">السعر</h4><p className="text-white font-bold text-xl">${instructor.lessonPrice} / ساعة</p></div></div>
                 </div>
 
+                 <Button asChild className="w-full cta-button mt-6">
+                    <Link href="/booking">احجز الآن مع {instructor.teacherName}</Link>
+                 </Button>
+
             </Card>
           </div>
 
@@ -166,3 +170,5 @@ export default function InstructorProfilePage() {
     </div>
   );
 }
+
+    

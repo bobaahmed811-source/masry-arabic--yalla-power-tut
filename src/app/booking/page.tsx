@@ -71,8 +71,7 @@ export default function BookingPage() {
   const { toast } = useToast();
 
   const instructorsCollection = useMemoFirebase(() => {
-    if (!firestore) return null;
-    return collection(firestore, 'instructors');
+    return firestore ? collection(firestore, 'instructors') : null;
   }, [firestore]);
 
   const { data: instructors, isLoading: isLoadingInstructors, error: instructorsError } = useCollection<Instructor>(instructorsCollection);
@@ -262,3 +261,5 @@ export default function BookingPage() {
     </div>
   );
 };
+
+    

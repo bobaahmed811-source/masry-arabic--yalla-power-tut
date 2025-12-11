@@ -59,7 +59,7 @@ export default function StorePage() {
   const userPurchasesQuery = useMemoFirebase(() => {
     if (!firestore || !user) return null;
     return query(collection(firestore, purchasesCollectionPath), where('userId', '==', user.uid));
-  }, [firestore, user, purchasesCollectionPath]);
+  }, [firestore, user]);
 
   const { data: products, isLoading: isLoadingProducts } = useCollection<Product>(productsQuery);
   const { data: purchases, isLoading: isLoadingPurchases } = useCollection<Purchase>(userPurchasesQuery);
@@ -90,6 +90,8 @@ export default function StorePage() {
         setIsSubmitting(false);
         return;
     }
+    
+    setPaymentMessage(null); // Clear previous messages
 
     const purchaseData: any = {
       userId: user.uid,
@@ -113,12 +115,14 @@ export default function StorePage() {
       : `<strong>تم تسجيل طلبك بنجاح!</strong><br/><br/>
          مرحباً بك في خطوتك الأولى نحو الإتقان! طلبك لشراء <strong>"${product.name}"</strong> هو الآن قيد المراجعة.<br/><br/>
          <strong>الخطوة التالية:</strong> لإتمام عملية الشراء، سيقوم فريق الإدارة لدينا بالتواصل معك عبر البريد الإلكتروني المسجل لدينا خلال الساعات القادمة لتزويدك برابط دفع آمن ومباشر.`;
-
-    setPaymentMessage({
-        type: 'success',
-        title: '✅ تم استلام طلبك بنجاح!',
-        body: successMessageBody,
-    });
+    
+    if (user) {
+        setPaymentMessage({
+            type: 'success',
+            title: '✅ تم استلام طلبك بنجاح!',
+            body: successMessageBody,
+        });
+    }
     
     if (isGift) setGiftEmail('');
     setIsSubmitting(false);
@@ -168,7 +172,7 @@ export default function StorePage() {
       </header>
 
       <main className="max-w-6xl mx-auto">
-         {paymentMessage && (
+         {paymentMessage && user && (
             <div className={`p-6 rounded-xl mb-8 shadow-lg transition-all duration-300 ${paymentMessage.type === 'success' ? 'bg-green-800/20 border-green-500' : 'bg-red-800/20 border-red-500'} border`}>
                 <div className="flex items-center gap-4">
                     <CheckCircle className="w-10 h-10 text-green-400" />
@@ -302,3 +306,5 @@ style.innerHTML = `
 }
 `;
 document.head.appendChild(style);
+
+    

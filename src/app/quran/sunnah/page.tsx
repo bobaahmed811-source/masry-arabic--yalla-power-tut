@@ -26,8 +26,7 @@ const HadithCard = ({ hadith }: { hadith: Hadith }) => (
 export default function SunnahPage() {
   const firestore = useFirestore();
   const hadithsCollection = useMemoFirebase(() => {
-    if (!firestore) return null;
-    return collection(firestore, 'hadiths');
+    return firestore ? collection(firestore, 'hadiths') : null;
   }, [firestore]);
 
   const { data: hadiths, isLoading, error } = useCollection<Hadith>(hadithsCollection);
@@ -81,3 +80,5 @@ export default function SunnahPage() {
     </div>
   );
 }
+
+    
