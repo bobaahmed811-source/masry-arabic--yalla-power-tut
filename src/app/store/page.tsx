@@ -57,10 +57,10 @@ export default function StorePage() {
     setPaymentMessage(null);
 
     if (!user || !firestore) {
-      setPaymentMessage({ 
-        type: 'info', 
+      toast({ 
+        variant: 'destructive',
         title: 'محتوى محمي للملوك فقط', 
-        body: 'لا يمكن إتمام عملية الشراء لأنكِ لم تسجلي دخولك. يرجى <a href="/login" class="font-bold underline text-gold-accent">تسجيل الدخول</a> أولاً لتتمكني من الحصول على كنوز المملكة.' 
+        description: 'لا يمكن إتمام عملية الشراء لأنكِ لم تسجلي دخولك. يرجى تسجيل الدخول أولاً.' 
       });
       setIsSubmitting(false);
       return;
@@ -169,7 +169,7 @@ export default function StorePage() {
                     <p className="text-sand-ochre mb-4 flex-grow">نسخة رقمية طبق الأصل من بردية نادرة تحتوي على حكم ومواعظ قديمة لتعميق فهمك الثقافي.</p>
                     <div className="flex justify-between items-center mt-6 w-full">
                       <span className="text-4xl font-extrabold text-white">$120</span>
-                      <Button onClick={() => buyProduct('بردية حكمة بتاح حتب', 120)} disabled={isSubmitting} className="cta-button">
+                      <Button onClick={() => buyProduct('بردية حكمة بتاح حتب', 120)} disabled={isSubmitting || !user} className="cta-button">
                         {isSubmitting ? <Loader2 className="animate-spin"/> : 'اطلب الآن'}
                       </Button>
                     </div>
@@ -181,12 +181,17 @@ export default function StorePage() {
                     <p className="text-sand-ochre mb-4 flex-grow">مجموعة صوتية حصرية بجودة استوديو، تحتوي على تأملات وقصص من مصر القديمة لتدريب أذنك على اللغة.</p>
                     <div className="flex justify-between items-center mt-6 w-full">
                       <span className="text-4xl font-extrabold text-white">$180</span>
-                      <Button onClick={() => buyProduct('مفتاح الحياة الصوتي', 180)} disabled={isSubmitting} className="cta-button">
+                      <Button onClick={() => buyProduct('مفتاح الحياة الصوتي', 180)} disabled={isSubmitting || !user} className="cta-button">
                          {isSubmitting ? <Loader2 className="animate-spin"/> : 'اطلب الآن'}
                       </Button>
                     </div>
                   </div>
                 </div>
+                 {!user && (
+                    <div className="mt-8 p-4 bg-yellow-900/50 text-yellow-300 border border-yellow-500 rounded-lg text-center">
+                        يجب <Link href="/login" className="font-bold underline">تسجيل الدخول</Link> لتتمكن من شراء الكنوز.
+                    </div>
+                )}
             </TabsContent>
             
             <TabsContent value="gifts" className="mt-8">
@@ -276,4 +281,5 @@ style.innerHTML = `
 `;
 document.head.appendChild(style);
 
+    
     
