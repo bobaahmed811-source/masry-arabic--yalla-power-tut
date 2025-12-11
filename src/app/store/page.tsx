@@ -5,12 +5,15 @@ import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebas
 import { addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { collection, query, where } from 'firebase/firestore';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Gift, PiggyBank, ShoppingCart, History, ArrowLeft, Loader2, Ankh, ScrollText } from 'lucide-react';
+import { Gift, PiggyBank, ShoppingCart, History, ArrowLeft, Loader2, Ankh, ScrollText, Lock } from 'lucide-react';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+
 
 // Define the structure for a payment message
 type PaymentMessage = {
-  type: 'success' | 'error' | null;
+  type: 'success' | 'error' | 'info' | null;
   title: string;
   body: string;
 };
@@ -29,8 +32,8 @@ interface Purchase {
 export default function StorePage() {
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
+  const { toast } = useToast();
   const [paymentMessage, setPaymentMessage] = useState<PaymentMessage | null>(null);
-  const [nilePoints, setNilePoints] = useState(1250); // Mock points
   const [giftEmail, setGiftEmail] = useState('');
   const [giftProduct, setGiftProduct] = useState('wisdom_papyrus');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -52,14 +55,12 @@ export default function StorePage() {
     setIsSubmitting(true);
     setPaymentMessage(null);
 
-    if (!firestore) {
-      setPaymentMessage({ type: 'error', title: 'فشل الاتصال بالنظام.', body: 'خدمة قاعدة البيانات غير متاحة حالياً.' });
-      setIsSubmitting(false);
-      return;
-    }
-    
-    if (!user) {
-      setPaymentMessage({ type: 'error', title: 'يرجى تسجيل الدخول أولاً!', body: 'لا يمكننا تسجيل طلب الشراء دون معرفة هويتك.' });
+    if (!user || !firestore) {
+      setPaymentMessage({ 
+        type: 'info', 
+        title: 'محتوى محمي للملوك فقط', 
+        body: 'لا يمكن إتمام عملية الشراء لأنكِ لم تسجلي دخولك. يرجى <a href="/login" class="font-bold underline text-gold-accent">تسجيل الدخول</a> أولاً لتتمكني من الحصول على كنوز المملكة.' 
+      });
       setIsSubmitting(false);
       return;
     }
@@ -82,9 +83,8 @@ export default function StorePage() {
         purchaseData.recipientEmail = recipientEmail;
     }
     
-    try {
-        const docRef = await addDocumentNonBlocking(collection(firestore, purchasesCollectionPath), purchaseData);
-
+    addDocumentNonBlocking(collection(firestore, purchasesCollectionPath), purchaseData)
+    .then((docRef) => {
         const successMessageBody = isGift 
           ? `<strong>رقم الطلب: ${docRef.id}</strong><br/><br/>
              شكراً لك على كرمك! لقد تم تسجيل طلبك لإهداء <strong>"${productName}"</strong> إلى ${recipientEmail}.<br/><br/>
@@ -100,12 +100,14 @@ export default function StorePage() {
         });
 
         if (isGift) setGiftEmail('');
-
-    } catch (error) {
-        setPaymentMessage({ type: 'error', title: 'حدث خطأ', body: 'لم نتمكن من تسجيل طلبك. يرجى المحاولة مرة أخرى.' });
-    } finally {
+    })
+    .catch((error) => {
+        console.error("Error creating purchase request:", error);
+        setPaymentMessage({ type: 'error', title: 'حدث خطأ', body: 'لم نتمكن من تسجيل طلبك. قد تكون هناك مشكلة في الصلاحيات. يرجى المحاولة مرة أخرى.' });
+    })
+    .finally(() => {
         setIsSubmitting(false);
-    }
+    });
   };
 
   const getStatusChip = (status: Purchase['status']) => {
@@ -122,6 +124,15 @@ export default function StorePage() {
     const productName = giftProduct === 'wisdom_papyrus' ? 'بردية حكمة بتاح حتب' : 'مفتاح الحياة الصوتي';
     buyProduct(productName, productPrice, true, giftEmail);
   }
+  
+  if (isUserLoading) {
+      return (
+        <div className="flex justify-center items-center h-screen bg-nile-dark">
+            <Loader2 className="w-12 h-12 text-gold-accent animate-spin" />
+            <p className="text-center text-lg text-sand-ochre ml-4">جاري تحميل خزانة الكنوز...</p>
+        </div>
+      );
+  }
 
   return (
     <div className="min-h-screen bg-nile-dark text-white p-4 md:p-8" style={{ direction: 'rtl' }}>
@@ -136,9 +147,9 @@ export default function StorePage() {
 
       <main className="max-w-6xl mx-auto">
          {paymentMessage && (
-            <div className={`p-6 rounded-xl mb-8 shadow-lg transition-all duration-300 ${paymentMessage.type === 'success' ? 'bg-green-800/20 border-green-500' : 'bg-red-800/20 border-red-500'} border`}>
-              <p className={`font-extrabold text-2xl mb-3 ${paymentMessage.type === 'success' ? 'text-green-300' : 'text-red-300'}`}>{paymentMessage.title}</p>
-              <div className={`text-md ${paymentMessage.type === 'success' ? 'text-green-200' : 'text-red-200'} space-y-2`} dangerouslySetInnerHTML={{ __html: paymentMessage.body }}></div>
+            <div className={`p-6 rounded-xl mb-8 shadow-lg transition-all duration-300 ${paymentMessage.type === 'success' ? 'bg-green-800/20 border-green-500' : paymentMessage.type === 'error' ? 'bg-red-800/20 border-red-500' : 'bg-blue-800/20 border-blue-500'} border`}>
+              <p className={`font-extrabold text-2xl mb-3 ${paymentMessage.type === 'success' ? 'text-green-300' : paymentMessage.type === 'error' ? 'text-red-300' : 'text-blue-300'}`}>{paymentMessage.title}</p>
+              <div className={`text-md ${paymentMessage.type === 'success' ? 'text-green-200' : paymentMessage.type === 'error' ? 'text-red-200' : 'text-blue-200'} space-y-2`} dangerouslySetInnerHTML={{ __html: paymentMessage.body }}></div>
             </div>
           )}
 
@@ -146,7 +157,7 @@ export default function StorePage() {
             <TabsList className="grid w-full grid-cols-3 bg-nile/50 p-2 rounded-xl border border-sand-ochre/30">
               <TabsTrigger value="treasures" className="tab-trigger"><ShoppingCart className="w-5 h-5 ml-2"/> كنوز المملكة</TabsTrigger>
               <TabsTrigger value="gifts" className="tab-trigger"><Gift className="w-5 h-5 ml-2"/> إرسال هدية</TabsTrigger>
-              <TabsTrigger value="history" className="tab-trigger"><History className="w-5 h-5 ml-2"/> سجل الطلبات</TabsTrigger>
+              <TabsTrigger value="history" className="tab-trigger" disabled={!user}><History className="w-5 h-5 ml-2"/> {user ? 'سجل طلباتك' : 'سجل الطلبات (للمسجلين)'}</TabsTrigger>
             </TabsList>
             
             <TabsContent value="treasures" className="mt-8">
@@ -158,9 +169,9 @@ export default function StorePage() {
                     <p className="text-sand-ochre mb-4 flex-grow">نسخة رقمية طبق الأصل من بردية نادرة تحتوي على حكم ومواعظ قديمة لتعميق فهمك الثقافي.</p>
                     <div className="flex justify-between items-center mt-6 w-full">
                       <span className="text-4xl font-extrabold text-white">$120</span>
-                      <button onClick={() => buyProduct('بردية حكمة بتاح حتب', 120)} disabled={isSubmitting} className="cta-button">
+                      <Button onClick={() => buyProduct('بردية حكمة بتاح حتب', 120)} disabled={isSubmitting} className="cta-button">
                         {isSubmitting ? <Loader2 className="animate-spin"/> : 'اطلب الآن'}
-                      </button>
+                      </Button>
                     </div>
                   </div>
                   
@@ -170,9 +181,9 @@ export default function StorePage() {
                     <p className="text-sand-ochre mb-4 flex-grow">مجموعة صوتية حصرية بجودة استوديو، تحتوي على تأملات وقصص من مصر القديمة لتدريب أذنك على اللغة.</p>
                     <div className="flex justify-between items-center mt-6 w-full">
                       <span className="text-4xl font-extrabold text-white">$180</span>
-                      <button onClick={() => buyProduct('مفتاح الحياة الصوتي', 180)} disabled={isSubmitting} className="cta-button">
+                      <Button onClick={() => buyProduct('مفتاح الحياة الصوتي', 180)} disabled={isSubmitting} className="cta-button">
                          {isSubmitting ? <Loader2 className="animate-spin"/> : 'اطلب الآن'}
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -195,9 +206,9 @@ export default function StorePage() {
                                 <option value="ankh_audio">مفتاح الحياة الصوتي ($180)</option>
                              </select>
                         </div>
-                        <button onClick={handleSendGift} disabled={isSubmitting} className="w-full cta-button text-lg">
+                        <Button onClick={handleSendGift} disabled={isSubmitting} className="w-full cta-button text-lg">
                            {isSubmitting ? <Loader2 className="animate-spin"/> : <><Gift className="inline-block ml-2"/> إرسال الهدية</>}
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </TabsContent>
@@ -256,6 +267,10 @@ style.innerHTML = `
 }
 .tab-trigger:hover:not([data-state=active]) {
   background-color: rgba(214, 184, 118, 0.1);
+}
+.tab-trigger[disabled] {
+    color: #6b7280;
+    cursor: not-allowed;
 }
 `;
 document.head.appendChild(style);

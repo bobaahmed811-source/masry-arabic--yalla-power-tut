@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useCallback, useEffect, useRef } from 'react';
@@ -6,7 +5,7 @@ import { useDrag, useDrop, DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Check, ArrowLeft, Gem, Loader2, Lock } from 'lucide-react';
+import { Check, ArrowLeft, Gem, Loader2, Lock, Shuffle } from 'lucide-react';
 import { useUser } from '@/firebase';
 import { doc, updateDoc, increment } from 'firebase/firestore';
 
@@ -53,7 +52,7 @@ const GameContent = () => {
   const [currentPuzzleIndex, setCurrentPuzzleIndex] = useState(0);
   const [shuffledWords, setShuffledWords] = useState<string[]>([]);
   const [arrangedWords, setArrangedWords] = useState<string[]>([]);
-  const [isCorrect, setIsCorrect] = useState(false);
+  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [message, setMessage] = useState('');
   const [nilePoints, setNilePoints] = useState(0);
 
@@ -71,7 +70,7 @@ const GameContent = () => {
     if (currentPuzzle) {
       setShuffledWords(shuffleWords(currentPuzzle.sentence));
       setArrangedWords([]);
-      setIsCorrect(false);
+      setIsCorrect(null);
       setMessage('');
     }
   }, [currentPuzzleIndex, currentPuzzle]);
@@ -128,7 +127,7 @@ const GameContent = () => {
       setCurrentPuzzleIndex(nextIndex);
     } else {
       setMessage(`تهانينا يا ${alias}! أكملت كل تحديات ترتيب الكلمات لهذا اليوم.`);
-      setIsCorrect(true);
+      setIsCorrect(true); // Keep it true to show completion state
     }
   }, [currentPuzzleIndex, alias]);
 
@@ -188,6 +187,8 @@ const GameContent = () => {
     );
   }
 
+  const isChallengeFinished = isCorrect && currentPuzzleIndex === PUZZLES.length -1;
+
   return (
     <div className="w-full max-w-3xl bg-[#0d284e] rounded-xl shadow-2xl dashboard-card" style={{ direction: 'rtl' }}>
 
@@ -197,15 +198,15 @@ const GameContent = () => {
         <h2 className="text-3xl font-extrabold text-[#FFD700] mb-4 text-center royal-title">رتّب كلمات الفراعنة 👑</h2>
         <p className="text-gray-300 text-lg mb-6 text-center">اسحب الكلمات لترتيب الجملة بالعامية المصرية.</p>
         
-        <div ref={arrangeDrop} className={`min-h-[120px] p-4 border-2 rounded-xl flex flex-wrap justify-center items-center transition-colors duration-300 ${isCorrect ? 'border-green-500 bg-green-900/30' : 'border-gray-500 border-dashed bg-[#1c3d6d]'}`}>
+        <div ref={arrangeDrop} className={`min-h-[120px] p-4 border-2 rounded-xl flex flex-wrap justify-center items-center transition-colors duration-300 ${isCorrect === true ? 'border-green-500 bg-green-900/30' : isCorrect === false ? 'border-red-500 bg-red-900/30' : 'border-gray-500 border-dashed bg-[#1c3d6d]'}`}>
           {arrangedWords.length > 0 ? arrangedWords.map((word, index) => (
-            <DraggableWord key={`${word}-${index}-arranged`} id={`${word}-${index}`} word={word} index={index} source="arranged" moveWord={moveWordInArrangeArea} isLocked={isCorrect} />
+            <DraggableWord key={`${word}-${index}-arranged`} id={`${word}-${index}`} word={word} index={index} source="arranged" moveWord={moveWordInArrangeArea} isLocked={isCorrect === true} />
           )) : <p className="text-gray-400 text-lg">اسحب الكلمات إلى هنا...</p>}
         </div>
 
-        <div ref={sourceDrop} className="min-h-[100px] mt-6 p-4 bg-[#17365e]/50 rounded-lg flex flex-wrap justify-center items-center">
+        <div ref={sourceDrop} className={`min-h-[100px] mt-6 p-4 bg-[#17365e]/50 rounded-lg flex flex-wrap justify-center items-center transition-opacity ${isCorrect === true ? 'opacity-30' : ''}`}>
             {shuffledWords.map((word, index) => (
-               <DraggableWord key={`${word}-${index}-shuffled`} id={`${word}-${index}`} word={word} index={index} source="shuffled" moveWord={() => {}} isLocked={isCorrect} />
+               <DraggableWord key={`${word}-${index}-shuffled`} id={`${word}-${index}`} word={word} index={index} source="shuffled" moveWord={() => {}} isLocked={isCorrect === true} />
             ))}
         </div>
         
@@ -221,14 +222,14 @@ const GameContent = () => {
         )}
 
         <div className="mt-6 flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4 sm:space-x-reverse">
-          {!isCorrect ? (
-            <Button onClick={checkAnswer} className="cta-button px-8 py-3 text-lg rounded-full w-full sm:w-auto" disabled={!user}>
-              <Check className="ml-2 h-5 w-5" /> تحقق من الإجابة
+          {isCorrect === true ? (
+            <Button onClick={nextPuzzle} className="cta-button bg-green-600 hover:bg-green-700 px-8 py-3 text-lg rounded-full w-full sm:w-auto">
+              {isChallengeFinished ? 'إنهاء التحدي' : 'التحدي التالي'}
+              <ArrowLeft className="mr-2 h-5 w-5" />
             </Button>
           ) : (
-            <Button onClick={nextPuzzle} className="cta-button bg-green-600 hover:bg-green-700 px-8 py-3 text-lg rounded-full w-full sm:w-auto">
-              {currentPuzzleIndex < PUZZLES.length - 1 ? 'التحدي التالي' : 'إنهاء التحدي'}
-              <ArrowLeft className="mr-2 h-5 w-5" />
+            <Button onClick={checkAnswer} className="cta-button px-8 py-3 text-lg rounded-full w-full sm:w-auto" disabled={!user || arrangedWords.length === 0}>
+              <Check className="ml-2 h-5 w-5" /> تحقق من الإجابة
             </Button>
           )}
           <Link href="/" className="w-full sm:w-auto">
