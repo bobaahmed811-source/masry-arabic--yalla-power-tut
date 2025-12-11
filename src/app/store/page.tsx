@@ -60,7 +60,7 @@ export default function StorePage() {
       toast({ 
         variant: 'destructive',
         title: 'محتوى محمي للملوك فقط', 
-        description: 'لا يمكن إتمام عملية الشراء لأنكِ لم تسجلي دخولك. يرجى تسجيل الدخول أولاً.' 
+        description: 'لا يمكن إتمام عملية الشراء. يرجى تسجيل الدخول أولاً للمتابعة.' 
       });
       setIsSubmitting(false);
       return;
