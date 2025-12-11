@@ -293,5 +293,3 @@ export default function DialogueChallengePage() {
     </div>
   );
 };
-
-    

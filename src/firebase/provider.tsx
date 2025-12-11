@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { DependencyList, createContext, useContext, ReactNode, useMemo, useState, useEffect } from 'react';
@@ -186,5 +187,3 @@ export const useUser = (includeFirestore = false): UserHookResult => {
   
   return { user, isUserLoading, userError };
 };
-
-  
