@@ -18,13 +18,17 @@ import {
   Play,
   ArrowLeft,
   Loader2,
+  WandSparkles,
+  CheckCircle,
+  XCircle,
+  AlertCircle
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
-import { getSpeechAudio } from '../ai-actions';
+import { getSpeechAudio, getPronunciationAnalysis } from '../ai-actions';
 import { cn } from '@/lib/utils';
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection } from 'firebase/firestore';
+import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { collection, doc, updateDoc, increment } from 'firebase/firestore';
 
 // Define the type for a phrase from Firestore
 interface Phrase {
@@ -34,128 +38,65 @@ interface Phrase {
   translation: string;
 }
 
+type AnalysisResult = {
+    evaluation: 'correct' | 'incorrect' | 'unclear';
+    feedback: string;
+} | null;
 
-// Dictionary for all UI texts, now including Spanish and French
 const lang: Record<string, Record<string, string>> = {
   ar: {
     title: "تحديات قوة حتشبسوت الفرعونية",
     mentor: "استمعي للمرسوم الملكي، ثم أعلني ولاءك بترديده",
-    instructions: 'استمع إلى الجملة ورددها بصوت واضح لتفعيل قوتك الفرعونية.',
-    loading: 'جارٍ تجهيز صوت المرشد...',
-    error: 'حدث خطأ: لا يمكن تشغيل الصوت.',
+    loading_phrases: "جاري تحميل المراسيم الملكية...",
     record: 'سجل صوتك',
     recording: 'جاري التسجيل...',
     stop_recording: 'إيقاف التسجيل',
-    next: 'التالي',
+    next: 'التحدي التالي',
     go_back: 'العودة للوحة التحكم',
     play_audio: 'استمع للمرسوم',
-    playing_audio: 'جاري التشغيل...',
-    your_turn: 'حان دورك الآن!',
-    record_prompt: 'يمكنك تسجيل صوتك ومقارنته.',
-    next_prompt: 'رائع! سيتم نقلك للتحدي التالي.',
-    audio_ready: 'الصوت جاهز',
-    audio_ready_desc: 'يمكنك الآن الاستماع إلى الجملة.',
-    audio_error_title: 'خطأ في الصوت',
-    audio_error_desc: 'فشل في جلب المقطع الصوتي.',
-    playback_error_title: 'خطأ في التشغيل',
-    playback_error_desc: 'لم نتمكن من تشغيل الملف الصوتي.',
+    evaluate: 'استدعِ أذن فرعون للتقييم',
+    evaluating: 'أذن فرعون تستمع...',
     mic_error_title: 'خطأ في الميكروفون',
     mic_error_desc: 'يرجى التأكد من إعطاء الإذن لاستخدام الميكروفون.',
     mic_unsupported_title: 'المتصفح غير مدعوم',
     mic_unsupported_desc: 'خاصية تسجيل الصوت غير مدعومة في هذا المتصفح.',
+    analysis_error: 'فشل تحليل النطق.',
   },
   en: {
     title: "Hatshepsut's Pharaoh's Might Challenges",
     mentor: "Listen to the royal decree, then declare your loyalty by repeating it.",
-    instructions: 'Listen to the sentence and repeat it clearly to activate your pharaonic power.',
-    loading: "Preparing mentor's voice...",
-    error: 'An error occurred: Cannot play audio.',
+    loading_phrases: 'Loading Royal Decrees...',
     record: 'Record Voice',
     recording: 'Recording...',
     stop_recording: 'Stop Recording',
-    next: 'Next',
+    next: 'Next Challenge',
     go_back: 'Back to Dashboard',
     play_audio: 'Listen to Decree',
-    playing_audio: 'Playing...',
-    your_turn: "It's your turn now!",
-    record_prompt: 'You can record your voice and compare.',
-    next_prompt: 'Great! You will be taken to the next challenge.',
-    audio_ready: 'Audio Ready',
-    audio_ready_desc: 'You can now listen to the sentence.',
-    audio_error_title: 'Audio Error',
-    audio_error_desc: 'Failed to fetch the audio clip.',
-    playback_error_title: 'Playback Error',
-    playback_error_desc: 'We could not play the audio file.',
+    evaluate: "Invoke Pharaoh's Ear for Evaluation",
+    evaluating: "Pharaoh's Ear is listening...",
     mic_error_title: 'Microphone Error',
     mic_error_desc: 'Please ensure you have given permission to use the microphone.',
     mic_unsupported_title: 'Browser Not Supported',
     mic_unsupported_desc: 'Audio recording is not supported in this browser.',
-  },
-  es: {
-    title: "Desafíos de Poder Faraónico de Hatshepsut",
-    mentor: "Escucha el decreto real, luego declara tu lealtad repitiéndolo.",
-    instructions: 'Escucha la frase y repítela claramente para activar tu poder faraónico.',
-    loading: "Preparando la voz del mentor...",
-    error: 'Ocurrió un error: No se puede reproducir el audio.',
-    record: 'Grabar Voz',
-    recording: 'Grabando...',
-    stop_recording: 'Detener Grabación',
-    next: 'Siguiente',
-    go_back: 'Volver al Panel',
-    play_audio: 'Escuchar Decreto',
-    playing_audio: 'Reproduciendo...',
-    your_turn: "¡Es tu turno ahora!",
-    record_prompt: 'Puedes grabar tu voz y compararla.',
-    next_prompt: '¡Genial! Serás llevado al siguiente desafío.',
-    audio_ready: 'Audio Listo',
-    audio_ready_desc: 'Ahora puedes escuchar la frase.',
-    audio_error_title: 'Error de Audio',
-    audio_error_desc: 'No se pudo obtener el clip de audio.',
-    playback_error_title: 'Error de Reproducción',
-    playback_error_desc: 'No pudimos reproducir el archivo de audio.',
-    mic_error_title: 'Error de Micrófono',
-    mic_error_desc: 'Por favor, asegúrate de haber dado permiso para usar el micrófono.',
-    mic_unsupported_title: 'Navegador No Soportado',
-    mic_unsupported_desc: 'La grabación de audio no es compatible con este navegador.',
-  },
-  fr: {
-    title: "Défis de la Puissance Pharaonique d'Hatshepsout",
-    mentor: "Écoutez le décret royal, puis déclarez votre loyauté en le répétant.",
-    instructions: 'Écoutez la phrase et répétez-la clairement pour activer votre pouvoir pharaonique.',
-    loading: "Préparation de la voix du mentor...",
-    error: 'Une erreur est survenue: Impossible de lire l\'audio.',
-    record: 'Enregistrer la Voix',
-    recording: 'Enregistrement...',
-    stop_recording: 'Arrêter l\'enregistrement',
-    next: 'Suivant',
-    go_back: 'Retour au Tableau de Bord',
-    play_audio: 'Écouter le Décret',
-    playing_audio: 'Lecture...',
-    your_turn: "C'est à votre tour !",
-    record_prompt: 'Vous pouvez enregistrer votre voix et la comparer.',
-    next_prompt: 'Excellent ! Vous passerez au prochain défi.',
-    audio_ready: 'Audio Prêt',
-    audio_ready_desc: 'Vous pouvez maintenant écouter la phrase.',
-    audio_error_title: 'Erreur Audio',
-    audio_error_desc: 'Échec de la récupération du clip audio.',
-    playback_error_title: 'Erreur de Lecture',
-    playback_error_desc: 'Nous n\'avons pas pu lire le fichier audio.',
-    mic_error_title: 'Erreur de Microphone',
-    mic_error_desc: 'Veuillez vous assurer d\'avoir donné la permission d\'utiliser le microphone.',
-    mic_unsupported_title: 'Navigateur Non Supporté',
-    mic_unsupported_desc: 'L\'enregistrement audio n\'est pas pris en charge par ce navigateur.',
+    analysis_error: 'Pronunciation analysis failed.',
   },
 };
+
 
 export default function PronunciationChallengePage() {
   const [currentLang, setCurrentLang] = useState('ar');
   const [isRecording, setIsRecording] = useState(false);
+  const [userAudioBlob, setUserAudioBlob] = useState<Blob | null>(null);
   const [userAudioUrl, setUserAudioUrl] = useState<string | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const [isMentorAudioLoading, setIsMentorAudioLoading] = useState(false);
-  const mentorAudioRef = useRef<HTMLAudioElement | null>(null);
-  
-  const firestore = useFirestore();
+
+  const [isLoadingMentorAudio, setIsLoadingMentorAudio] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisResult, setAnalysisResult] = useState<AnalysisResult>(null);
+
+  const { user, firestore } = useUser(true);
+  const [nilePoints, setNilePoints] = useState(0);
+
   const phrasesCollection = useMemoFirebase(() => firestore ? collection(firestore, 'phrases') : null, [firestore]);
   const { data: phrases, isLoading: isLoadingPhrases } = useCollection<Phrase>(phrasesCollection);
 
@@ -164,34 +105,37 @@ export default function PronunciationChallengePage() {
   const { toast } = useToast();
   
   const challengePhrase = phrases ? phrases[currentPhraseIndex]?.text : '...';
-  const texts = lang[currentLang] || lang.en;
+  const texts = lang[currentLang] || lang.ar;
   const isRtl = currentLang === 'ar';
+  
+  useEffect(() => {
+    if (user && typeof user.nilePoints === 'number') {
+      setNilePoints(user.nilePoints);
+    }
+  }, [user]);
   
   useEffect(() => {
     return () => {
       if (userAudioUrl) URL.revokeObjectURL(userAudioUrl);
-      if (mentorAudioRef.current) mentorAudioRef.current.pause();
     };
   }, [userAudioUrl]);
 
   const handlePlayMentorAudio = async () => {
     if (!challengePhrase || challengePhrase === '...') return;
-    setIsMentorAudioLoading(true);
-    toast({ title: texts.loading });
+    setIsLoadingMentorAudio(true);
+    toast({ title: "جاري توليد صوت المرشد..." });
     try {
       const result = await getSpeechAudio(challengePhrase);
       if (result.error || !result.media) {
         throw new Error(result.error || 'No media returned');
       }
       const audio = new Audio(result.media);
-      mentorAudioRef.current = audio;
       audio.play();
-      toast({ title: texts.playing_audio });
     } catch (error) {
       console.error("Error playing mentor audio:", error);
-      toast({ variant: 'destructive', title: texts.audio_error_title, description: (error as Error).message });
+      toast({ variant: 'destructive', title: "خطأ في تشغيل الصوت", description: (error as Error).message });
     } finally {
-      setIsMentorAudioLoading(false);
+      setIsLoadingMentorAudio(false);
     }
   };
   
@@ -200,6 +144,11 @@ export default function PronunciationChallengePage() {
       toast({ variant: 'destructive', title: texts.mic_unsupported_title, description: texts.mic_unsupported_desc });
       return;
     }
+    setAnalysisResult(null);
+    if(userAudioUrl) URL.revokeObjectURL(userAudioUrl);
+    setUserAudioUrl(null);
+    setUserAudioBlob(null);
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const recorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
@@ -209,6 +158,7 @@ export default function PronunciationChallengePage() {
       recorder.ondataavailable = (event) => audioChunks.push(event.data);
       recorder.onstop = () => {
         const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+        setUserAudioBlob(audioBlob);
         const newAudioUrl = URL.createObjectURL(audioBlob);
         setUserAudioUrl(newAudioUrl);
         stream.getTracks().forEach((track) => track.stop());
@@ -216,8 +166,6 @@ export default function PronunciationChallengePage() {
 
       recorder.start();
       setIsRecording(true);
-      if (userAudioUrl) URL.revokeObjectURL(userAudioUrl);
-      setUserAudioUrl(null);
     } catch (err) {
       console.error('Error accessing microphone:', err);
       toast({ variant: 'destructive', title: texts.mic_error_title, description: texts.mic_error_desc });
@@ -231,11 +179,41 @@ export default function PronunciationChallengePage() {
     }
   };
 
-  const handleLanguageChange = (langCode: string) => {
-    setCurrentLang(langCode);
-    if(document.documentElement) {
-        document.documentElement.dir = langCode === 'ar' ? 'rtl' : 'ltr';
-        document.documentElement.lang = langCode;
+  const handleAnalyzePronunciation = async () => {
+    if (!userAudioBlob || !user || !firestore) {
+      toast({ variant: 'destructive', title: 'خطأ', description: 'لا يوجد تسجيل لتحليله أو أنك غير مسجل الدخول.' });
+      return;
+    }
+    setIsAnalyzing(true);
+    setAnalysisResult(null);
+    try {
+      const reader = new FileReader();
+      reader.readAsDataURL(userAudioBlob);
+      reader.onloadend = async () => {
+        const base64Audio = reader.result as string;
+        const result = await getPronunciationAnalysis({
+          userAudio: base64Audio,
+          originalText: challengePhrase
+        });
+
+        if (result.success && result.analysis) {
+            setAnalysisResult(result.analysis);
+            if (result.analysis.evaluation === 'correct') {
+                const pointsToAward = 25;
+                const userRef = doc(firestore, 'users', user.uid);
+                await updateDoc(userRef, { nilePoints: increment(pointsToAward) });
+                setNilePoints(prev => prev + pointsToAward);
+                toast({ title: `رائع! +${pointsToAward} نقطة نيل`, description: 'نطقك سليم!' });
+            }
+        } else {
+            throw new Error(result.error || texts.analysis_error);
+        }
+      };
+    } catch (error) {
+       console.error("Error analyzing pronunciation:", error);
+       toast({ variant: 'destructive', title: 'خطأ في التحليل', description: (error as Error).message });
+    } finally {
+        setIsAnalyzing(false);
     }
   };
 
@@ -244,22 +222,25 @@ export default function PronunciationChallengePage() {
         setCurrentPhraseIndex(prev => (prev + 1) % phrases.length);
         if (userAudioUrl) URL.revokeObjectURL(userAudioUrl);
         setUserAudioUrl(null);
-        toast({ title: texts.next_prompt });
+        setUserAudioBlob(null);
+        setAnalysisResult(null);
     }
   };
 
+  const handleLanguageChange = (langCode: string) => {
+    setCurrentLang(langCode);
+  };
 
-   useEffect(() => {
-    handleLanguageChange(currentLang);
-    return () => {
-        if(document.documentElement) {
-            document.documentElement.dir = 'ltr';
-            document.documentElement.lang = 'en';
-        }
+  const getEvaluationIcon = () => {
+    if (!analysisResult) return null;
+    switch(analysisResult.evaluation) {
+        case 'correct': return <CheckCircle className="w-8 h-8 text-green-400" />;
+        case 'incorrect': return <XCircle className="w-8 h-8 text-red-400" />;
+        case 'unclear': return <AlertCircle className="w-8 h-8 text-yellow-400" />;
     }
-   }, [currentLang]);
+  };
 
-  return (
+   return (
       <div className={cn("relative flex items-center justify-center min-h-screen bg-nile-dark p-4 overflow-hidden", isRtl ? "rtl" : "ltr")}>
         <div 
             className="absolute inset-0 bg-cover bg-center z-0 opacity-20"
@@ -275,8 +256,6 @@ export default function PronunciationChallengePage() {
           <SelectContent>
             <SelectItem value="en">English (EN)</SelectItem>
             <SelectItem value="ar">العربية (AR)</SelectItem>
-            <SelectItem value="es">Español (ES)</SelectItem>
-            <SelectItem value="fr">Français (FR)</SelectItem>
           </SelectContent>
         </Select>
          <Link href="/" className="utility-button px-4 py-2 text-md font-bold rounded-lg flex items-center justify-center">
@@ -293,10 +272,13 @@ export default function PronunciationChallengePage() {
           <p className="text-lg text-sand-ochre">{texts.mentor}</p>
         </div>
 
-        <div className="bg-nile p-8 md:p-12 rounded-xl shadow-inner border-2 border-sand-ochre/20 text-center">
+        <div className="bg-nile p-8 md:p-12 rounded-xl shadow-inner border-2 border-sand-ochre/20">
           <div className="mb-8 p-4 bg-nile-dark rounded-lg border-2 border-dashed border-sand-ochre min-h-[96px] flex items-center justify-center">
             {isLoadingPhrases ? (
-                <Loader2 className="w-8 h-8 animate-spin text-sand-ochre" />
+                <div className="flex items-center gap-2 text-sand-ochre">
+                    <Loader2 className="w-6 h-6 animate-spin" />
+                    <span>{texts.loading_phrases}</span>
+                </div>
             ) : (
                 <p className="text-4xl font-extrabold text-white" style={{fontFamily: "'El Messiri', sans-serif"}}>
                 {challengePhrase}
@@ -304,25 +286,19 @@ export default function PronunciationChallengePage() {
             )}
           </div>
 
-          <p className="text-xl mb-8 text-sand-ochre font-bold">
-            {texts.instructions}
-          </p>
-
-          <div className="flex justify-center items-center gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div className="flex flex-col items-center gap-2">
                 <Button
-                    id="play-button"
                     onClick={handlePlayMentorAudio}
-                    disabled={isMentorAudioLoading || isLoadingPhrases}
+                    disabled={isLoadingMentorAudio || isLoadingPhrases}
                     className="shadow-lg w-24 h-24 rounded-full bg-gold-accent text-nile-dark text-3xl mx-auto flex items-center justify-center hover:bg-yellow-300 transition-all duration-300 disabled:bg-gray-500 disabled:opacity-50"
                 >
-                    {isMentorAudioLoading ? <Loader2 className="animate-spin" /> : <Play />}
+                    {isLoadingMentorAudio ? <Loader2 className="animate-spin" /> : <Play />}
                 </Button>
                 <span className="text-sm font-bold text-sand-ochre">{texts.play_audio}</span>
             </div>
             <div className="flex flex-col items-center gap-2">
                 <Button
-                    id="record-button"
                     onClick={isRecording ? stopRecording : startRecording}
                     disabled={isLoadingPhrases}
                     className={cn("shadow-lg w-24 h-24 rounded-full text-white text-3xl mx-auto flex items-center justify-center transition-all duration-300 transform hover:scale-110", isRecording ? 'bg-red-600 hover:bg-red-700 animate-pulse' : 'bg-blue-600 hover:bg-blue-700')}
@@ -334,11 +310,26 @@ export default function PronunciationChallengePage() {
           </div>
           
           {userAudioUrl && (
-            <div className="mt-6">
-                <h3 className="text-sand-ochre font-bold mb-2">{texts.your_turn}</h3>
+            <div className="mt-6 bg-nile-dark/50 p-4 rounded-lg">
+                <h3 className="text-sand-ochre font-bold mb-2">تسجيلك:</h3>
                 <audio src={userAudioUrl} controls className="w-full" />
+                 <Button onClick={handleAnalyzePronunciation} disabled={isAnalyzing} className="w-full mt-4 cta-button bg-teal-600 hover:bg-teal-700">
+                    {isAnalyzing ? <Loader2 className="animate-spin ml-2" /> : <WandSparkles className="ml-2"/>}
+                    {isAnalyzing ? texts.evaluating : texts.evaluate}
+                 </Button>
             </div>
            )}
+
+            {analysisResult && (
+                <div className="mt-6 p-4 rounded-lg bg-nile-dark/70 border border-sand-ochre/50">
+                    <div className="flex items-center gap-3">
+                        {getEvaluationIcon()}
+                        <h4 className="text-xl font-bold royal-title text-gold-accent">تقييم أذن فرعون</h4>
+                    </div>
+                    <p className="mt-2 text-lg text-sand-ochre mr-11">{analysisResult.feedback}</p>
+                </div>
+            )}
+
 
           <div className={cn("mt-10 flex", isRtl ? "justify-start" : "justify-end")}>
             <Button
@@ -356,5 +347,3 @@ export default function PronunciationChallengePage() {
     </div>
   );
 }
-
-    

@@ -8,6 +8,7 @@ import { getSpeechAudioFlow } from '@/ai/flows/speech-flow';
 import { getComicDialogueFlow, ComicDialogueInputSchema } from '@/ai/flows/comic-dialogue-flow';
 import { getDialogueEvaluationFlow, DialogueEvaluationInputSchema } from '@/ai/flows/dialogue-evaluation-flow';
 import { getStorytellerAudioFlow, StorytellerInputSchema } from '@/ai/flows/storyteller-flow';
+import { getPronunciationAnalysisFlow, PronunciationAnalysisInputSchema } from '@/ai/flows/pronunciation-analysis-flow';
 import { z } from 'zod';
 
 
@@ -75,4 +76,18 @@ export async function getStorytellerAudio(values: z.infer<typeof StorytellerInpu
     }
 }
 
+/**
+ * Server action to get a pronunciation analysis from the AI.
+ * @param values The audio data URI and the original text.
+ * @returns A promise that resolves to the AI's analysis.
+ */
+export async function getPronunciationAnalysis(values: z.infer<typeof PronunciationAnalysisInputSchema>) {
+    try {
+        const result = await getPronunciationAnalysisFlow(values);
+        return { success: true, analysis: result };
+    } catch (e: any) {
+        console.error("Error in getPronunciationAnalysis action:", e);
+        return { error: "Failed to get analysis from the AI. " + (e.message || "Please try again later.") };
+    }
+}
     
