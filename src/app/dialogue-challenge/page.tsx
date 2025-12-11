@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useUser, useFirestore } from '@/firebase';
+import { useUser } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { User, Store, Crown, Medal, Skull, Loader2, Lock, Gem } from 'lucide-react';
@@ -148,6 +148,7 @@ export default function DialogueChallengePage() {
   
     const userText = choice.text.substring(choice.text.indexOf(':') + 2);
     const userDialogueStepTemplate = storyScenario.find(s => s.id === currentStepId);
+    if (!userDialogueStepTemplate) return;
     const userDialogueStep = { ...userDialogueStepTemplate, text: userText, speaker: alias };
     setDialogue(prev => [...prev, userDialogueStep]);
   

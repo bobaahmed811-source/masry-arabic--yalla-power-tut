@@ -12,7 +12,7 @@ import {
   CardContent,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { useUser, useAuth, useCollection, useMemoFirebase } from '@/firebase';
+import { useUser, useAuth, useCollection, useMemoFirebase, useFirestore } from '@/firebase';
 import { collection, query, getDocs } from 'firebase/firestore';
 import { updateProfileNonBlocking } from '@/firebase/non-blocking-login';
 import {
@@ -54,10 +54,12 @@ const StatCard = ({
   icon,
   value,
   label,
+  isLoading,
 }: {
   icon: React.ReactNode;
   value: string;
   label: string;
+  isLoading?: boolean;
 }) => (
   <Card className="stat-card p-4">
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -67,7 +69,11 @@ const StatCard = ({
       {icon}
     </CardHeader>
     <CardContent>
-      <div className="text-2xl font-bold text-white">{value}</div>
+      {isLoading ? (
+        <Loader2 className="h-6 w-6 animate-spin text-white" />
+      ) : (
+        <div className="text-2xl font-bold text-white">{value}</div>
+      )}
     </CardContent>
   </Card>
 );
@@ -156,7 +162,8 @@ const AliasManagement = ({ user, toast }: { user: any, toast: any }) => {
 }
 
 export default function HomePage() {
-  const { user, isUserLoading, firestore } = useUser(true);
+  const { user, isUserLoading } = useUser();
+  const firestore = useFirestore();
   const auth = useAuth();
   const { toast } = useToast();
 
@@ -171,7 +178,6 @@ export default function HomePage() {
   
   const { data: progresses, isLoading: isProgressLoading } = useCollection<Progress>(progressCollectionRef);
   
-  // Directly use nilePoints from the useUser hook
   const nilePoints = user?.nilePoints ?? 0;
   
   useEffect(() => {
@@ -209,10 +215,12 @@ export default function HomePage() {
         }
     };
 
-    if (!isProgressLoading) {
+    if (user && !isProgressLoading) {
         fetchCourseData();
+    } else if (!user) {
+        setIsStatsLoading(false);
     }
-  }, [progresses, firestore, isProgressLoading, toast]);
+  }, [progresses, firestore, isProgressLoading, user, toast]);
 
 
   const progressPercentage = totalLessons > 0 ? (lessonsCompleted / totalLessons) * 100 : 0;
@@ -279,13 +287,15 @@ export default function HomePage() {
                   </div>
                   <StatCard
                     icon={<Gem className="h-6 w-6 text-sand-ochre" />}
-                    value={isUserLoading ? '...' : `${nilePoints}`}
+                    value={`${nilePoints}`}
                     label="نقاط النيل"
+                    isLoading={isUserLoading}
                   />
                   <StatCard
                     icon={<BookOpen className="h-6 w-6 text-sand-ochre" />}
-                    value={isStatsLoading ? '...' : `${lessonsCompleted} من ${totalLessons}`}
+                    value={`${lessonsCompleted} من ${totalLessons}`}
                     label="الدروس المكتملة"
+                    isLoading={isStatsLoading}
                   />
               </div>
 
@@ -295,14 +305,20 @@ export default function HomePage() {
                         <CardTitle className="royal-title text-2xl">تقدمكِ في المملكة</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-sand-ochre mb-4">أنتِ حالياً في مستوى: <span className="font-bold text-white">تلميذ النيل</span></p>
-                        <div className="progress-bar-royal mb-4">
-                           <div className="progress-fill-royal" style={{ width: `${progressPercentage}%` }}></div>
-                        </div>
-                        <div className="flex justify-between text-xs text-sand-ochre">
-                            <span>المستوى الحالي</span>
-                            <span>المستوى التالي: كاتب البردي</span>
-                        </div>
+                       {isStatsLoading ? (
+                            <Loader2 className="h-6 w-6 animate-spin text-sand-ochre"/>
+                       ) : (
+                        <>
+                          <p className="text-sand-ochre mb-4">أنتِ حالياً في مستوى: <span className="font-bold text-white">تلميذ النيل</span></p>
+                          <div className="progress-bar-royal mb-4">
+                            <div className="progress-fill-royal" style={{ width: `${progressPercentage}%` }}></div>
+                          </div>
+                          <div className="flex justify-between text-xs text-sand-ochre">
+                              <span>المستوى الحالي</span>
+                              <span>المستوى التالي: كاتب البردي</span>
+                          </div>
+                        </>
+                       )}
                     </CardContent>
                 </Card>
 

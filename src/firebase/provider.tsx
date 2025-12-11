@@ -3,7 +3,7 @@
 
 import React, { DependencyList, createContext, useContext, ReactNode, useMemo, useState, useEffect } from 'react';
 import { FirebaseApp } from 'firebase/app';
-import { Firestore, doc, getDoc, DocumentData } from 'firebase/firestore';
+import { Firestore, doc, getDoc, setDoc, DocumentData } from 'firebase/firestore';
 import { Auth, User, onAuthStateChanged } from 'firebase/auth';
 import { FirebaseErrorListener } from '@/components/FirebaseErrorListener'
 import { useRouter } from 'next/navigation';
@@ -87,35 +87,47 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
         if (firebaseUser) {
           // User is signed in, fetch profile to get nilePoints and check for displayName
           const userDocRef = doc(firestore, 'users', firebaseUser.uid);
-          const userDoc = await getDoc(userDocRef);
           
-          let userData: DocumentData | undefined;
-          if (userDoc.exists()) {
-             userData = userDoc.data();
-          } else {
-             // If user doc doesn't exist, create it. This is crucial for new sign-ups.
-             const newUserDoc = {
-                id: firebaseUser.uid,
-                email: firebaseUser.email,
-                name: firebaseUser.displayName || 'New User',
-                alias: firebaseUser.displayName || `فرعون ${firebaseUser.uid.substring(0,5)}`,
-                registrationDate: new Date().toISOString(),
-                nilePoints: 0,
-             };
-             await setDoc(userDocRef, newUserDoc);
-             userData = newUserDoc;
-          }
+          try {
+            const userDoc = await getDoc(userDocRef);
+            let userData: DocumentData | undefined;
+            
+            if (userDoc.exists()) {
+              userData = userDoc.data();
+            } else {
+              // If user doc doesn't exist, this is a new sign-up. Create the user document.
+              console.log(`User document for ${firebaseUser.uid} not found. Creating...`);
+              const newUserDoc = {
+                  id: firebaseUser.uid,
+                  email: firebaseUser.email,
+                  name: firebaseUser.displayName || 'New Queen',
+                  alias: firebaseUser.displayName || `ملكة ${firebaseUser.uid.substring(0,5)}`,
+                  registrationDate: new Date().toISOString(),
+                  nilePoints: 0,
+              };
+              await setDoc(userDocRef, newUserDoc);
+              userData = newUserDoc;
+            }
 
-          const fullUser: FullUser = {
-            ...firebaseUser,
-            nilePoints: userData?.nilePoints || 0,
-            displayName: firebaseUser.displayName || userData?.alias,
-          };
-          setUserAuthState({ user: fullUser, isUserLoading: false, userError: null });
+            const fullUser: FullUser = {
+              ...firebaseUser,
+              nilePoints: userData?.nilePoints ?? 0,
+              // Ensure displayName is updated from Firestore if it was null initially
+              displayName: firebaseUser.displayName || userData?.alias,
+            };
 
-          // Redirect new users to the goals page
-          if (!firebaseUser.displayName) {
-             router.push('/goals');
+            setUserAuthState({ user: fullUser, isUserLoading: false, userError: null });
+
+            // If the user was newly created (or displayName was just set),
+            // and they don't have a progress document, they likely need to go to /goals.
+            // A simple check is if they don't have a displayName set on the firebaseUser object yet.
+            if (!firebaseUser.displayName) {
+               router.push('/goals');
+            }
+
+          } catch (error) {
+             console.error("Error fetching/creating user document:", error);
+             setUserAuthState({ user: firebaseUser, isUserLoading: false, userError: error as Error });
           }
 
         } else {

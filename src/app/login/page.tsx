@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useUser, useAuth } from '@/firebase';
+import { useAuth } from '@/firebase';
 import { initiateEmailSignIn } from '@/firebase/non-blocking-login';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';

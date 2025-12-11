@@ -47,6 +47,12 @@ export default function GoalsPage() {
         });
         setIsSubmitting(false);
       }
+    } else if (!selectedGoal) {
+        toast({
+            variant: 'destructive',
+            title: 'لم يتم تحديد الهدف',
+            description: 'يرجى اختيار هدف واحد على الأقل للمتابعة.'
+        });
     }
   };
 
