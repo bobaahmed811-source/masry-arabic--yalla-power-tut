@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useCallback, useEffect, useRef } from 'react';
@@ -7,27 +6,16 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Check, ArrowLeft, Gem, Loader2, Lock, Shuffle } from 'lucide-react';
-import { useUser } from '@/firebase';
-import { doc, updateDoc, increment } from 'firebase/firestore';
+import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { doc, updateDoc, increment, collection } from 'firebase/firestore';
 
-// === Game Data ===
-const PUZZLES = [
-  {
-    id: 1,
-    sentence: "أنا عايز عيش بلدي", // I want local bread
-    arabicTranslation: "أريد خبزاً محلياً.",
-  },
-  {
-    id: 2,
-    sentence: "الجو حر أوي النهارده", // The weather is very hot today
-    arabicTranslation: "الطقس حار جداً اليوم.",
-  },
-  {
-    id: 3,
-    sentence: "يا جدعان أنا جعان", // Hey guys, I'm hungry
-    arabicTranslation: "يا قوم، أنا جائع.",
-  },
-];
+// === Type Definitions ===
+interface Phrase {
+  id: string;
+  category: string;
+  text: string;
+  translation: string;
+}
 
 // Shuffle words function
 const shuffleWords = (sentence: string) => {
@@ -57,9 +45,12 @@ const GameContent = () => {
   const [message, setMessage] = useState('');
   const [nilePoints, setNilePoints] = useState(0);
 
+  const phrasesCollection = useMemoFirebase(() => firestore ? collection(firestore, 'phrases') : null, [firestore]);
+  const { data: puzzles, isLoading: isLoadingPuzzles } = useCollection<Phrase>(phrasesCollection);
+
   const alias = user?.displayName || 'تحتمس الصغير';
-  const currentPuzzle = PUZZLES[currentPuzzleIndex];
-  const correctSentence = currentPuzzle?.sentence;
+  const currentPuzzle = puzzles ? puzzles[currentPuzzleIndex] : null;
+  const correctSentence = currentPuzzle?.text;
 
   useEffect(() => {
     if (user && typeof user.nilePoints === 'number') {
@@ -69,7 +60,7 @@ const GameContent = () => {
   
   const resetPuzzle = useCallback(() => {
     if (currentPuzzle) {
-        setShuffledWords(shuffleWords(currentPuzzle.sentence));
+        setShuffledWords(shuffleWords(currentPuzzle.text));
         setArrangedWords([]);
         setIsCorrect(null);
         setMessage('');
@@ -78,7 +69,7 @@ const GameContent = () => {
 
   useEffect(() => {
     resetPuzzle();
-  }, [currentPuzzleIndex, resetPuzzle]);
+  }, [currentPuzzleIndex, resetPuzzle, puzzles]);
 
 
   const moveWordInArrangeArea = useCallback(
@@ -127,7 +118,9 @@ const GameContent = () => {
       // Reset the words for another try after a delay
       setTimeout(() => {
         setArrangedWords([]);
-        setShuffledWords(shuffleWords(currentPuzzle.sentence));
+        if (currentPuzzle) {
+          setShuffledWords(shuffleWords(currentPuzzle.text));
+        }
         setIsCorrect(null);
         setMessage('');
       }, 2000);
@@ -135,14 +128,15 @@ const GameContent = () => {
   }, [arrangedWords, correctSentence, alias, user, firestore, currentPuzzle]);
 
   const nextPuzzle = useCallback(() => {
+    if (!puzzles) return;
     const nextIndex = currentPuzzleIndex + 1;
-    if (nextIndex < PUZZLES.length) {
+    if (nextIndex < puzzles.length) {
       setCurrentPuzzleIndex(nextIndex);
     } else {
       setMessage(`تهانينا يا ${alias}! أكملت كل تحديات ترتيب الكلمات لهذا اليوم.`);
       setIsCorrect(true); // Keep it true to show completion state
     }
-  }, [currentPuzzleIndex, alias]);
+  }, [currentPuzzleIndex, puzzles, alias]);
 
   const ScoreHeader = ({ alias, nilePoints }: { alias: string, nilePoints: number }) => (
     <div className="flex justify-between items-center p-4 bg-[#17365e] rounded-t-xl border-b-2 border-[#d6b876] shadow-lg">
@@ -168,7 +162,7 @@ const GameContent = () => {
       drop: (item: any) => returnWord(item)
   }));
 
-  if (isUserLoading) {
+  if (isUserLoading || isLoadingPuzzles) {
     return (
       <div className="flex items-center justify-center text-white p-10 h-full">
         <Loader2 className="w-8 h-8 animate-spin text-gold-accent mr-3" />
@@ -192,6 +186,20 @@ const GameContent = () => {
     );
   }
 
+  if (!puzzles || puzzles.length === 0) {
+     return (
+      <div className="flex flex-col items-center justify-center text-white p-10 h-full dashboard-card">
+        <h2 className="text-2xl royal-title mb-4">لا توجد ألغاز</h2>
+        <p className="text-sand-ochre mb-6">لا توجد عبارات في "ديوان الإدارة" لإنشاء تحديات. يرجى إضافة بعض العبارات أولاً.</p>
+        <Link href="/admin">
+            <Button className="cta-button">
+                الذهاب إلى ديوان الإدارة
+            </Button>
+        </Link>
+      </div>
+    );
+  }
+
   if (!currentPuzzle) {
      return (
       <div className="flex items-center justify-center text-white p-10 h-full">
@@ -200,7 +208,7 @@ const GameContent = () => {
     );
   }
 
-  const isChallengeFinished = isCorrect && currentPuzzleIndex === PUZZLES.length -1;
+  const isChallengeFinished = isCorrect && puzzles && currentPuzzleIndex === puzzles.length -1;
 
   return (
     <div className="w-full max-w-3xl bg-[#0d284e] rounded-xl shadow-2xl dashboard-card" style={{ direction: 'rtl' }}>
@@ -224,8 +232,8 @@ const GameContent = () => {
         </div>
         
         <div className="mt-4 p-3 bg-[#17365e] rounded-lg shadow-inner">
-          <p className="text-sm text-gray-400">المعنى المراد بالفصحى:</p>
-          <p className="text-base font-bold text-white">{currentPuzzle.arabicTranslation}</p>
+          <p className="text-sm text-gray-400">English Translation:</p>
+          <p className="text-base font-bold text-white">{currentPuzzle.translation}</p>
         </div>
 
         {message && (
@@ -251,7 +259,7 @@ const GameContent = () => {
         </div>
 
         <p className="text-center text-sm text-gray-400 mt-4">
-          التحدي {currentPuzzleIndex + 1} من {PUZZLES.length}
+          التحدي {currentPuzzleIndex + 1} من {puzzles?.length || 0}
         </p>
       </div>
     </div>
