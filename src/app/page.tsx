@@ -198,10 +198,14 @@ export default function HomePage() {
             const lessonsQuery = query(collection(firestore, `courses/${currentProgress.courseId}/lessons`));
             const lessonsSnapshot = await getDocs(lessonsQuery);
             setTotalLessons(lessonsSnapshot.size);
+        } else if (!isProgressLoading) {
+            // If no progress docs, reset stats
+            setLessonsCompleted(0);
+            setTotalLessons(0);
         }
     };
     fetchCourseData();
-  }, [progresses, firestore]);
+  }, [progresses, firestore, isProgressLoading]);
 
 
   const handleSignOut = () => {
@@ -270,7 +274,7 @@ export default function HomePage() {
                   />
                   <StatCard
                     icon={<BookOpen className="h-6 w-6 text-sand-ochre" />}
-                    value={`${lessonsCompleted} من ${totalLessons}`}
+                    value={isProgressLoading ? '...' : `${lessonsCompleted} من ${totalLessons}`}
                     label="الدروس المكتملة"
                   />
               </div>
