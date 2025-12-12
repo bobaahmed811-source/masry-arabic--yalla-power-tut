@@ -105,42 +105,43 @@ const storytellerAudioFlow = ai.defineFlow(
   },
   async (input) => {
     // Step 1: Generate the narrative text.
-    const narrativeResponse = await narrativePrompt(input);
-    const narrative = narrativeResponse.output?.narrative;
+    // const narrativeResponse = await narrativePrompt(input);
+    // const narrative = narrativeResponse.output?.narrative;
 
-    if (!narrative) {
-      throw new Error('Failed to generate a narrative for the artifact.');
-    }
+    // if (!narrative) {
+    //   throw new Error('Failed to generate a narrative for the artifact.');
+    // }
 
-    // Step 2: Convert the narrative to speech.
-    const { media } = await ai.generate({
-      model: googleAI.model('gemini-2.5-flash-preview-tts'),
-      config: {
-        responseModalities: ['AUDIO'],
-        speechConfig: {
-          voiceConfig: {
-            prebuiltVoiceConfig: { voiceName: 'Arcturus' }, // A deep, authoritative voice
-          },
-        },
-      },
-      prompt: narrative,
-    });
+    // // Step 2: Convert the narrative to speech.
+    // const { media } = await ai.generate({
+    //   model: googleAI.model('gemini-2.5-flash-preview-tts'),
+    //   config: {
+    //     responseModalities: ['AUDIO'],
+    //     speechConfig: {
+    //       voiceConfig: {
+    //         prebuiltVoiceConfig: { voiceName: 'Arcturus' }, // A deep, authoritative voice
+    //       },
+    //     },
+    //   },
+    //   prompt: narrative,
+    // });
 
-    if (!media) {
-      throw new Error('No media was returned from the TTS model.');
-    }
+    // if (!media) {
+    //   throw new Error('No media was returned from the TTS model.');
+    // }
 
-    // Step 3: Convert the raw PCM audio to WAV format.
-    const pcmAudioBuffer = Buffer.from(
-      media.url.substring(media.url.indexOf(',') + 1),
-      'base64'
-    );
+    // // Step 3: Convert the raw PCM audio to WAV format.
+    // const pcmAudioBuffer = Buffer.from(
+    //   media.url.substring(media.url.indexOf(',') + 1),
+    //   'base64'
+    // );
     
-    const wavBase64 = await toWav(pcmAudioBuffer);
+    // const wavBase64 = await toWav(pcmAudioBuffer);
 
-    return {
-      media: 'data:audio/wav;base64,' + wavBase64,
-    };
+    // return {
+    //   media: 'data:audio/wav;base64,' + wavBase64,
+    // };
+    throw new Error("ميزة المرشد الصوتي معطلة مؤقتاً.");
   }
 );
 

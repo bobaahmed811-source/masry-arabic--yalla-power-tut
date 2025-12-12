@@ -65,8 +65,10 @@ const tutorFlow = ai.defineFlow(
     outputSchema: AITutorOutputSchema,
   },
   async (input) => {
-    const { output } = await tutorPrompt(input);
-    return output!;
+    // const { output } = await tutorPrompt(input);
+    // return output!;
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    return { answer: "ميزة المعلم الذكي معطلة مؤقتاً. سيتم تفعيلها قريباً." };
   }
 );
 

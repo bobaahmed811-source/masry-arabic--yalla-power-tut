@@ -69,8 +69,10 @@ const dialogueEvaluationFlow = ai.defineFlow(
     outputSchema: DialogueEvaluationOutputSchema,
   },
   async (input) => {
-    const { output } = await evaluationPrompt(input);
-    return output!;
+    // const { output } = await evaluationPrompt(input);
+    // return output!;
+    await new Promise(resolve => setTimeout(resolve, 500));
+    return { score: 10, feedback: "ميزة التقييم معطلة مؤقتاً، ولكن عمل جيد!", isPositive: true };
   }
 );
 

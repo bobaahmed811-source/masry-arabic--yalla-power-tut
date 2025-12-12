@@ -4,11 +4,11 @@
  * @fileOverview Server actions for AI-related functionalities.
  */
 
-// import { getSpeechAudioFlow } from '@/ai/flows/speech-flow';
-// import { getComicDialogueFlow, ComicDialogueInputSchema } from '@/ai/flows/comic-dialogue-flow';
-// import { getDialogueEvaluationFlow, DialogueEvaluationInputSchema } from '@/ai/flows/dialogue-evaluation-flow';
-// import { getStorytellerAudioFlow, StorytellerInputSchema } from '@/ai/flows/storyteller-flow';
-// import { getPronunciationAnalysisFlow, PronunciationAnalysisInputSchema } from '@/ai/flows/pronunciation-analysis-flow';
+import { getSpeechAudioFlow } from '@/ai/flows/speech-flow';
+import { getComicDialogueFlow, ComicDialogueInputSchema } from '@/ai/flows/comic-dialogue-flow';
+import { getDialogueEvaluationFlow, DialogueEvaluationInputSchema } from '@/ai/flows/dialogue-evaluation-flow';
+import { getStorytellerAudioFlow, StorytellerInputSchema } from '@/ai/flows/storyteller-flow';
+import { getPronunciationAnalysisFlow, PronunciationAnalysisInputSchema } from '@/ai/flows/pronunciation-analysis-flow';
 import { z } from 'zod';
 
 
@@ -20,9 +20,9 @@ import { z } from 'zod';
  */
 export async function getSpeechAudio(text: string) {
   try {
-    // const result = await getSpeechAudioFlow(text);
-    // return { success: true, media: result.media };
-    return { error: "ميزة تحويل النص إلى صوت معطلة مؤقتاً." };
+    const result = await getSpeechAudioFlow(text);
+    return { success: true, media: result.media };
+    // return { error: "ميزة تحويل النص إلى صوت معطلة مؤقتاً." };
 
   } catch (e: any) {
     console.error("Error in getSpeechAudio action:", e);
@@ -37,12 +37,12 @@ export async function getSpeechAudio(text: string) {
  * @param values The scene identifier.
  * @returns A promise that resolves to the generated dialogue or an error.
  */
-export async function getComicDialog(values: z.infer<any>) { //z.infer<typeof ComicDialogueInputSchema>
+export async function getComicDialog(values: z.infer<typeof ComicDialogueInputSchema>) {
   try {
-    // const result = await getComicDialogueFlow(values);
-    // return { success: true, dialogue: result.dialogue };
-    await new Promise(resolve => setTimeout(resolve, 500));
-    return { success: true, dialogue: ['الحوار معطل مؤقتاً', 'سيتم تفعيله قريباً', 'شكراً لتفهمكم'] };
+    const result = await getComicDialogueFlow(values);
+    return { success: true, dialogue: result.dialogue };
+    // await new Promise(resolve => setTimeout(resolve, 500));
+    // return { success: true, dialogue: ['الحوار معطل مؤقتاً', 'سيتم تفعيله قريباً', 'شكراً لتفهمكم'] };
   } catch (e: any) {
     console.error("Error in getComicDialog action:", e);
     return { error: "Failed to get dialogue from the AI. " + (e.message || "Please try again later.") };
@@ -55,12 +55,12 @@ export async function getComicDialog(values: z.infer<any>) { //z.infer<typeof Co
  * @param values The user's answer and the type of choice made.
  * @returns A promise that resolves to the AI's evaluation.
  */
-export async function getDialogueEvaluation(values: z.infer<any>) { //z.infer<typeof DialogueEvaluationInputSchema>
+export async function getDialogueEvaluation(values: z.infer<typeof DialogueEvaluationInputSchema>) {
   try {
-    // const result = await getDialogueEvaluationFlow(values);
-    // return { success: result };
-    await new Promise(resolve => setTimeout(resolve, 500));
-     return { success: { score: 10, feedback: "ميزة التقييم معطلة مؤقتاً، ولكن عمل جيد!", isPositive: true } };
+    const result = await getDialogueEvaluationFlow(values);
+    return { success: result };
+    // await new Promise(resolve => setTimeout(resolve, 500));
+    //  return { success: { score: 10, feedback: "ميزة التقييم معطلة مؤقتاً، ولكن عمل جيد!", isPositive: true } };
 
   } catch (e: any)
    {
@@ -74,11 +74,11 @@ export async function getDialogueEvaluation(values: z.infer<any>) { //z.infer<ty
  * @param values The title and description of the artifact.
  * @returns A promise that resolves to the AI's generated audio.
  */
-export async function getStorytellerAudio(values: z.infer<any>) { //z.infer<typeof StorytellerInputSchema>
+export async function getStorytellerAudio(values: z.infer<typeof StorytellerInputSchema>) {
     try {
-        // const result = await getStorytellerAudioFlow(values);
-        // return { success: true, media: result.media };
-        return { error: "ميزة المرشد الصوتي معطلة مؤقتاً." };
+        const result = await getStorytellerAudioFlow(values);
+        return { success: true, media: result.media };
+        // return { error: "ميزة المرشد الصوتي معطلة مؤقتاً." };
     } catch (e: any) {
         console.error("Error in getStorytellerAudio action:", e);
         return { error: "Failed to get story from the AI. " + (e.message || "Please try again later.") };
@@ -90,12 +90,12 @@ export async function getStorytellerAudio(values: z.infer<any>) { //z.infer<type
  * @param values The audio data URI and the original text.
  * @returns A promise that resolves to the AI's analysis.
  */
-export async function getPronunciationAnalysis(values: z.infer<any>) { // z.infer<typeof PronunciationAnalysisInputSchema>
+export async function getPronunciationAnalysis(values: z.infer<typeof PronunciationAnalysisInputSchema>) {
     try {
-        // const result = await getPronunciationAnalysisFlow(values);
-        // return { success: true, analysis: result };
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        return { success: true, analysis: { evaluation: 'correct', feedback: 'ميزة تحليل النطق معطلة مؤقتاً، ولكن يبدو جيداً!' } };
+        const result = await getPronunciationAnalysisFlow(values);
+        return { success: true, analysis: result };
+        // await new Promise(resolve => setTimeout(resolve, 1000));
+        // return { success: true, analysis: { evaluation: 'correct', feedback: 'ميزة تحليل النطق معطلة مؤقتاً، ولكن يبدو جيداً!' } };
 
     } catch (e: any) {
         console.error("Error in getPronunciationAnalysis action:", e);

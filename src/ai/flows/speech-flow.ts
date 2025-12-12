@@ -68,34 +68,35 @@ const speechFlow = ai.defineFlow(
     outputSchema: SpeechOutputSchema,
   },
   async (query) => {
-    const { media } = await ai.generate({
-      model: googleAI.model('gemini-2.5-flash-preview-tts'),
-      config: {
-        responseModalities: ['AUDIO'],
-        speechConfig: {
-          voiceConfig: {
-            prebuiltVoiceConfig: { voiceName: 'Algenib' }, // A suitable voice
-          },
-        },
-      },
-      prompt: query,
-    });
+    // const { media } = await ai.generate({
+    //   model: googleAI.model('gemini-2.5-flash-preview-tts'),
+    //   config: {
+    //     responseModalities: ['AUDIO'],
+    //     speechConfig: {
+    //       voiceConfig: {
+    //         prebuiltVoiceConfig: { voiceName: 'Algenib' }, // A suitable voice
+    //       },
+    //     },
+    //   },
+    //   prompt: query,
+    // });
 
-    if (!media) {
-      throw new Error('No media was returned from the TTS model.');
-    }
+    // if (!media) {
+    //   throw new Error('No media was returned from the TTS model.');
+    // }
 
-    // The model returns a data URI with raw PCM data, which we need to convert.
-    const pcmAudioBuffer = Buffer.from(
-      media.url.substring(media.url.indexOf(',') + 1),
-      'base64'
-    );
+    // // The model returns a data URI with raw PCM data, which we need to convert.
+    // const pcmAudioBuffer = Buffer.from(
+    //   media.url.substring(media.url.indexOf(',') + 1),
+    //   'base64'
+    // );
     
-    const wavBase64 = await toWav(pcmAudioBuffer);
+    // const wavBase64 = await toWav(pcmAudioBuffer);
 
-    return {
-      media: 'data:audio/wav;base64,' + wavBase64,
-    };
+    // return {
+    //   media: 'data:audio/wav;base64,' + wavBase64,
+    // };
+    throw new Error("ميزة تحويل النص إلى صوت معطلة مؤقتاً.");
   }
 );
 
