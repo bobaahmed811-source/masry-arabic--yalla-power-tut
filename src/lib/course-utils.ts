@@ -1,4 +1,3 @@
-
 'use client';
 
 import {
@@ -99,4 +98,3 @@ export async function updateProgress(firestore: Firestore, userId: string, cours
     currentLessonId: nextLesson ? nextLesson.id : '', // Empty string indicates course completion.
   });
 }
-

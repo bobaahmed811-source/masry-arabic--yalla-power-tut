@@ -1,4 +1,3 @@
-
 import { Smile, Mic, Crown, Medal } from 'lucide-react';
 import React from 'react';
 

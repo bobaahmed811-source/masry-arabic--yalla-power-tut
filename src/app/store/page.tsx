@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -402,5 +401,3 @@ style.innerHTML = `
 }
 `;
 document.head.appendChild(style);
-
-    
