@@ -1,3 +1,1 @@
-{
-    "@types/wav": "^1.0.3"
-}
+confirm    "
