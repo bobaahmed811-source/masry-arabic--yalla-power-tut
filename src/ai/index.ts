@@ -23,5 +23,4 @@ export const ai = genkit({
   // Allow running flows in a development environment without explicit environment checks.
   flowStateStore: 'local',
 });
-
     
