@@ -49,6 +49,12 @@
       "imageHint": "cartoon cat"
     },
     {
+      "id": "coloring-tut",
+      "description": "A coloring book style outline of Tutankhamun's mask.",
+      "imageUrl": "https://storage.googleapis.com/stedi-assets/yalla-masry/coloring-tut-outline.png",
+      "imageHint": "tutankhamun coloring"
+    },
+    {
       "id": "animal-cat",
       "description": "A cute cat",
       "imageUrl": "https://images.unsplash.com/photo-1615497001839-b0a0eac3274c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjdXRlJTIwY2F0fGVufDB8fHx8MTc2NTg0MzY3NHww&ixlib=rb-4.1.0&q=80&w=1080",
@@ -128,12 +134,6 @@
       "metadata": {
         "name": "فرخة"
       }
-    },
-    {
-      "id": "coloring-tut",
-      "description": "A coloring book style outline of Tutankhamun's mask.",
-      "imageUrl": "https://images.unsplash.com/photo-1715873215286-068b556f8f13?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx0dXRhbmtoYW11biUyMGNvbG9yaW5nJTIwcGFnZXxlbnwwfHx8fDE3NjU4NjEwNzJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "tutankhamun coloring"
     }
   ]
 }
