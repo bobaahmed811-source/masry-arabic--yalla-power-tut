@@ -51,7 +51,7 @@
     {
       "id": "animal-cat",
       "description": "A cute cat",
-      "imageUrl": "https://images.unsplash.com/photo-1611267254323-4db7b39c732c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjdXRlJTIwY2F0fGVufDB8fHx8MTc2NTcxNTAwMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1615497001839-b0a0eac3274c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjdXRlJTIwY2F0fGVufDB8fHx8MTc2NTg0MzY3NHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "cute cat",
       "metadata": {
         "name": "قطة"
@@ -60,7 +60,7 @@
     {
       "id": "animal-dog",
       "description": "A friendly dog",
-      "imageUrl": "https://images.unsplash.com/photo-1744098349414-dc4a7030ac94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8ZnJpZW5kbHklMjBkb2d8ZW58MHx8fHwxNzY1ODExMzc4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1650062416746-3c7295e03426?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxmcmllbmRseSUyMGRvZ3xlbnwwfHx8fDE3NjU4MTEzNzh8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "friendly dog",
       "metadata": {
         "name": "كلب"
@@ -69,7 +69,7 @@
     {
       "id": "animal-horse",
       "description": "A majestic horse",
-      "imageUrl": "https://images.unsplash.com/photo-1758573951518-6a096db4f818?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxtYWplc3RpYyUyMGhvcnNlfGVufDB8fHx8MTc2NTgxMTM3N3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1542731367-c646d21238e5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxtYWplc3RpYyUyMGhvcnNlfGVufDB8fHx8MTc2NTgxMTM3N3ww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "majestic horse",
       "metadata": {
         "name": "حصان"
@@ -78,7 +78,7 @@
     {
       "id": "animal-donkey",
       "description": "A funny donkey",
-      "imageUrl": "https://images.unsplash.com/photo-1667070667413-e9bd1686967a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxmdW5ueSUyMGRvbmtleXxlbnwwfHx8fDE3NjU4MTEzNzh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1667070716162-0cb554c45f3c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxmdW5ueSUyMGRvbmtleXxlbnwwfHx8fDE3NjU4MTEzNzh8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "funny donkey",
       "metadata": {
         "name": "حمار"
@@ -87,7 +87,7 @@
     {
       "id": "animal-camel",
       "description": "A desert camel",
-      "imageUrl": "https://images.unsplash.com/photo-1518978288375-f36cefcc992e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxkZXNlcnQlMjBjYW1lbHxlbnwwfHx8fDE3NjU4MTEzNzd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1574545190184-d67b04202272?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxkZXNlcnQlMjBjYW1lbHxlbnwwfHx8fDE3NjU4MTEzNzd8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "desert camel",
       "metadata": {
         "name": "جمل"
@@ -96,7 +96,7 @@
     {
       "id": "animal-duck",
       "description": "A cute duckling",
-      "imageUrl": "https://images.unsplash.com/photo-1686483286920-15e154b18d32?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjdXRlJTIwZHVja2xpbmd8ZW58MHx8fHwxNzY1ODExMzc3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1686483287041-5ba0fc488cb1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjdXRlJTIwZHVja2xpbmd8ZW58MHx8fHwxNzY1ODExMzc3fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "cute duckling",
       "metadata": {
         "name": "بطة"
@@ -105,7 +105,7 @@
     {
       "id": "animal-sheep",
       "description": "A fluffy sheep",
-      "imageUrl": "https://images.unsplash.com/photo-1591823901925-060f62294156?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+      "imageUrl": "https://images.unsplash.com/photo-1698345470411-4e9cb72d8284?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxmbHVmZnklMjBzaGVlcHxlbnwwfHx8fDE3NjU4NjEwNzJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "fluffy sheep",
       "metadata": {
         "name": "خروف"
@@ -114,7 +114,7 @@
     {
       "id": "animal-cow",
       "description": "A spotted cow",
-      "imageUrl": "https://images.unsplash.com/photo-1570027885918-97109282504b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+      "imageUrl": "https://images.unsplash.com/photo-1721369944881-a4434bdfcc22?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxzcG90dGVkJTIwY293fGVufDB8fHx8MTc2NTg2MTA3Mnww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "spotted cow",
       "metadata": {
         "name": "بقرة"
@@ -123,7 +123,7 @@
     {
       "id": "animal-chicken",
       "description": "A clucking chicken",
-      "imageUrl": "https://images.unsplash.com/photo-1548548572-5c7d2f44483a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+      "imageUrl": "https://images.unsplash.com/photo-1543856967-ea9a54fd46a9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjbHVja2luZyUyMGNoaWNrZW58ZW58MHx8fHwxNzY1ODYxMDcyfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "clucking chicken",
       "metadata": {
         "name": "فرخة"
